@@ -1,3 +1,3 @@
 export default function App() {
-  return <h1>Code Trouble</h1>
+	return <h1>Code Trouble</h1>;
 }
