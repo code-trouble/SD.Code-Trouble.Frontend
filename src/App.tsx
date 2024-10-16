@@ -1,3 +1,10 @@
+import { ErrorPage } from "./pages/404";
+
+
 export default function App() {
-	return <h1>Code Trouble - Coloca a Page Coming Soon aqui</h1>;
+	return (
+    <>
+      <ErrorPage/>
+    </>
+  );
 }
