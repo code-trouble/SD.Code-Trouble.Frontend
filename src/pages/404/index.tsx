@@ -8,12 +8,11 @@ export const ErrorPage: React.FC = () => {
 			<NavBar />
 			<div className="hero">
 				<h1>
-					{" "}
-					404 <span className="hide-on-mobile">-</span>{" "}
+					404 <span className="hide-on-mobile">-</span>
 					<span className="enable-on-mobile">
 						<br />
-					</span>{" "}
-					Page not Found{" "}
+					</span>
+					Page not Found
 				</h1>
 				<p>
 					A página que está procurando não existe ou está temporariamente
