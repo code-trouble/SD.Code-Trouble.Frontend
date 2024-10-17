@@ -7,6 +7,7 @@
 	"scripts": {
 		"dev": "vite",
 		"build": "tsc -b && vite build",
+		"lighthouse": "lighthouse http://localhost:5173 --output html --output-path ./lighthouse-report.html",
 		"format": "yarn biome format --write .",
 		"lint": "yarn biome lint --write .",
 		"check": "yarn biome check --write .",
@@ -26,6 +27,7 @@
 		"@types/react-dom": "^18.3.0",
 		"@vitejs/plugin-react-swc": "^3.5.0",
 		"globals": "^15.9.0",
+		"lighthouse": "^12.2.1",
 		"typescript": "^5.5.3",
 		"vite": "^5.4.8"
 	}
