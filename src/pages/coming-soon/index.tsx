@@ -1,3 +1,14 @@
+import { NavBarComponent } from "../../components/navbar"
+
 export const ComingSoonPage = () => {
-    return <h1>Coming Soon Page</h1>
+  return (
+    <div className="main-wrapper">
+      <NavBarComponent/>
+      <div className="hero">
+        <h1> Coming soon! </h1>
+        <p>Estamos cozinhando algo. de devs para devs</p>
+        <button>Voltar para a Suporte</button>
+      </div>
+    </div>
+  );
 }
