@@ -1,7 +1,35 @@
-/* COLORS */
+/* BASE COLORS */
 $whiteBase: #ffffff;
 $blackBase: #000000;
+
+/* PRIMARY COLORS */
+$primaryColor: #2DBA4F;  // Dark Pastel Green
+$secondaryColor: #FF8E00;  // Channel Orange
+$tertiaryColor: #3348A4;  // Violet Blue
+
+/* SEMANTIC COLORS */
+$dangerColor: #BA2D2F;
+$warningColor: #F6BE24;
+$successColor: #1D7C4D;
+$infoColor: #3062D4;
+
+/* BACKGROUND COLORS */
+$dangerBgColor: #E6B3B4;
+$warningBgColor: #FCE8B0;
+$successBgColor: #AED0BF;
+$infoBgColor: #B4C6F0;
+
+/* NEUTRAL COLORS */
+$offWhite: #FAFCFE;
+$frenchGray: #B3B5B8;
+$dimGray: #6C6E71;
+$onyx: #323538;
+$eerieBlack: #15181B;
+
 
 /* FONTS */
 $mainFont: 'MS Sans Serif', sans-serif;
 $interFont: 'Inter', sans-serif;
+$montserratFont: 'Montserrat', sans-serif;
+$loraItalicFont: 'Lora', serif;
+$hindFont: 'Hind', sans-serif;
