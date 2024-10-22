@@ -17,9 +17,9 @@ export const ComingSoonPage: React.FC = () => {
         />
         <ReactTyped
           className="subtitle"
-          strings={["Estamos cozinhando algo de devs para devs"]}
+          strings={["Estamos cozinhando algo, de devs para devs"]}
           typeSpeed={45}
-          showCursor={false}
+          showCursor
         />
         <TextButton />
       </div>
