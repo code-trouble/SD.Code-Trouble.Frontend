@@ -1,6 +1,6 @@
 import React from "react";
-import { NavBar } from "../../components/navbar";
-import { TextButton } from "../../components/textbutton";
+import { NavBar } from "../../components/Navbar";
+import { TextButton } from "../../components/TextButton";
 import { ReactTyped } from "react-typed";
 
 export const ErrorPage: React.FC = () => {
@@ -8,7 +8,7 @@ export const ErrorPage: React.FC = () => {
     <div className="main-wrapper">
       <NavBar />
       <div className="hero">
-        <h1 className="title">
+        <h1 className="title main-wrapper-h1">
           404 <span className="hide-on-mobile">-</span>
           <span className="enable-on-mobile">
             <br />
