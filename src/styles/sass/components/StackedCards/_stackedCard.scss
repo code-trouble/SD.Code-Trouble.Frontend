@@ -20,6 +20,7 @@
 
   .card-content {
     padding: 20px;
+    background-color: $whiteBase;
 
     .card-author {
       display: flex;
@@ -73,8 +74,23 @@
           border: none;
           background-color: #C9C9C9;
           font-size: 16px;
-          font-family: $hindFont
+          font-family: $hindFont;
+          cursor: pointer;
+          transition: background-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+          
+          &:hover {
+            background-color: #0056b3;  // Darken the background on hover
+            transform: scale(0.95);     // Slightly reduce the scale to mimic a press
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); // Add a shadow for depth
+          }
+        
+          &:active {
+            background-color: #003d80;  // Even darker background on click
+            transform: scale(0.9);      // Further reduce scale for click effect
+            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2); // Slightly reduce the shadow
+          }
         }
+
       }
 
       .card-details {
@@ -109,7 +125,24 @@
         .details-right {
           align-self: flex-end;
           height: 40px;
+          transition: ease-in-out 0.15s;
+          background-color: transparent;
+
+          .arrow-button {
+            border: none;
+            background-color: transparent;
+            border-radius: 100px;
+
+            &-img {
+              background-color: transparent;
+            }
+          }
+
+          &.active-arrow:hover {
+            transform: scale(1.1);
+          }
         }
+
       }
     }
   }
