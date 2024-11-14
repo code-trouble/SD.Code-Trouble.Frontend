@@ -1,0 +1,149 @@
+
+.card {
+  width: 435px;
+  height: 435px;
+  border: solid 3px $blackBase;
+  border-radius: 9.61px;
+  overflow: hidden;
+
+  .card-header {
+    padding: 12px 20px;
+    background-color: $cardLightBlue;
+    border-bottom: solid 3px $blackBase;
+
+    .card-title {
+      font-size: 20px;
+      font-weight: 600;
+      font-family: $montserratFont;
+    }
+  }
+
+  .card-content {
+    padding: 20px;
+    background-color: $whiteBase;
+
+    .card-author {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      .author-info {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+
+        .author-name {
+          color: $onyx;
+          font-size: 20px;
+          font-weight: 600;
+          font-family: $montserratFont;
+        }
+      }
+    }
+
+    .card-body {
+      margin-top: 35px;
+
+      .card-heading {
+        font-size: 32px;
+        font-family: $montserratFont;
+        text-align: left;
+        font-weight: bold;
+        margin-bottom: 25px;
+
+        .highlight-text {
+          text-wrap: nowrap;
+        }
+      }
+
+      .card-description {
+        font-size: 20px;
+        font-style: italic;
+        font-family: $loraItalicFont;
+        margin-bottom: 50px;
+      }
+
+      .tag-list {
+        display: flex;
+        gap: 10px;
+        width: 395px;
+
+        .tag-item {
+          padding: 8px 16px;
+          border-radius: 100px;
+          border: none;
+          background-color: #C9C9C9;
+          font-size: 16px;
+          font-family: $hindFont;
+          cursor: pointer;
+          transition: background-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+          
+          &:hover {
+            background-color: #0056b3;  // Darken the background on hover
+            transform: scale(0.95);     // Slightly reduce the scale to mimic a press
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); // Add a shadow for depth
+          }
+        
+          &:active {
+            background-color: #003d80;  // Even darker background on click
+            transform: scale(0.9);      // Further reduce scale for click effect
+            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2); // Slightly reduce the shadow
+          }
+        }
+
+      }
+
+      .card-details {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        font-family: $hindFont;
+        font-size: 20px;
+        line-height: 20px;
+        margin-top: 20px;
+
+        .details-left {
+          display: flex;
+          align-items: center;
+
+
+          .upvote-count {
+            margin-left: 30px;
+            display: flex;
+            align-items: center;
+            gap: 3px;
+          }
+
+          .comment-count {
+            margin-left: 30px;
+            display: flex;
+            align-items: center;
+            gap: 3px;
+          }
+        }
+
+        .details-right {
+          align-self: flex-end;
+          height: 40px;
+          transition: ease-in-out 0.15s;
+          background-color: transparent;
+
+          .arrow-button {
+            border: none;
+            background-color: transparent;
+            border-radius: 100px;
+
+            &-img {
+              background-color: transparent;
+            }
+          }
+
+          &.active-arrow:hover {
+            transform: scale(1.1);
+          }
+        }
+
+      }
+    }
+  }
+}

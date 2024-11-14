@@ -55,14 +55,19 @@
       .enable-on-mobile {
         display: inline;
       }
-      
-      h1 {
+
+
+
+        /* criei essas classes para evitar
+       adicionar estilos a uma tag inteira.*/
+      main-wrapper-h1 {
         width: 251px;
         text-align: center;
         font-size: 64px;
       }
 
-      p {
+ 
+      main-wrapper-p {
         
         width: 300px;
         text-align: center;
@@ -91,12 +96,12 @@
       }
 
 
-      h1 {
+      main-wrapper-h1 {
         width: 664px;
         text-align: center;
       }
 
-      p {
+      main-wrapper-p {
         width: 559px;
         text-align: center;
       }

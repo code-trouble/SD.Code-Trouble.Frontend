@@ -1,6 +1,6 @@
 import React from "react";
-import { NavBar } from "../../components/navbar";
-import { TextButton } from "../../components/textbutton";
+import { NavBar } from "../../components/Navbar";
+import { TextButton } from "../../components/TextButton";
 import { ReactTyped } from "react-typed";
 
 export const ComingSoonPage: React.FC = () => {
