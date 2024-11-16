@@ -1,0 +1,76 @@
+.avatar-container {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.avatar-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.avatar-text-small {
+  gap: 5px;
+  font-family: $hindFont;
+}
+
+.avatar-text-medium,
+.avatar-text-large {
+  gap: 10px;
+  font-family: $montserratFont;
+}
+
+.avatar-name {
+  color: $eerieBlack;
+}
+
+.avatar-name-small {
+  font-size: 16px;
+}
+
+.avatar-name-medium,
+.avatar-name-large {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.avatar-name-large {
+  font-size: 24px;
+}
+
+.avatar-role {
+  color: $dimGray;
+}
+
+.avatar-role-small,
+.avatar-role-medium {
+  font-size: 14px;
+}
+
+.avatar-role-medium {
+  font-weight: 400;
+}
+
+.avatar-role-large {
+  font-size: 16px;
+}
+
+.avatar-img {
+  display: flex;
+}
+
+.avatar-img-small {
+  width: 25px;
+  height: 25px;
+}
+
+.avatar-img-medium {
+  width: 35px;
+  height: 35px;
+}
+
+.avatar-img-large {
+  width: 100px;
+  height: 100px;
+}
