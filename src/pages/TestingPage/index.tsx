@@ -1,13 +1,13 @@
 import React from "react";
 import { NavBar } from "../../components/Navbar";
-import { StackedCards } from "../../components/TeamStackedCard/StackedCards";
+import { Avatar } from "../../components/Avatar";
 
 export const TestingPage: React.FC = () => {
   return (
     <div className="main-wrapper">
       <NavBar />
       <div className="hero">
-        <StackedCards/>
+        <Avatar name="Professor Corrêa" role="Product Design" sizes="large" />
       </div>
     </div>
   );
