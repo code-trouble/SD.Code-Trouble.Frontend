@@ -1,10 +1,10 @@
 import React from "react";
 
-interface BadgeComponentProps {
+interface ITag {
     tags: string[];
 }
 
-export const BadgeComponent: React.FC<BadgeComponentProps> = ({
+export const Tag: React.FC<ITag> = ({
     tags
 }) => {
   return (
