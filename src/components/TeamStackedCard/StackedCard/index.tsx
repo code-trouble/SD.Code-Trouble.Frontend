@@ -3,10 +3,10 @@ import vectorStar from "../../../assets/images/png/starVector.png";
 import upvote from "../../../assets/images/png/upvote.png";
 import comments from "../../../assets/images/png/comments.png";
 import arrowButton from "../../../assets/images/png/arrowButton.png";
-import { BadgeComponent } from "../CardBadge";
+import { Tag } from "../../Tag/index";
 
 
-interface StackedCardProps {
+interface IStackedCard {
   username: string;
   headingTitle: string;
   subTitle: string;
@@ -17,7 +17,7 @@ interface StackedCardProps {
 
 }
 
-export const StackedCard: React.FC<StackedCardProps> = ({
+export const StackedCard: React.FC<IStackedCard> = ({
   username,
   headingTitle,
   subTitle,
@@ -50,7 +50,7 @@ export const StackedCard: React.FC<StackedCardProps> = ({
             {subTitle}
           </p>
 
-          <BadgeComponent
+          <Tag
             tags={tagArray}
           />
 
