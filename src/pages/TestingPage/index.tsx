@@ -1,6 +1,6 @@
 import React from "react";
 import { NavBar } from "../../components/Navbar";
-import { ToggleButtons } from "../../components/TeamToggleButton/ToggleButtons";
+import { AuthModal } from "../../components/AuthModal";
 
 
 
@@ -9,7 +9,7 @@ export const TestingPage: React.FC = () => {
     <div className="main-wrapper">
       <NavBar />
       <div className="hero">
-          <ToggleButtons />
+          <AuthModal type="signIn" />
       </div>  
     </div>
   );
