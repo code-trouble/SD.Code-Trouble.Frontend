@@ -1,6 +1,6 @@
 import React from "react";
-import { NavBar } from "../../components/Navbar";
-import { ToggleButton } from "../../components/ToggleButton";
+import { NavBar } from "../../components/oldNavbar";
+import { StackedCards } from "../../components/TeamStackedCard/StackedCards";
 
 
 
@@ -9,13 +9,7 @@ export const TestingPage: React.FC = () => {
     <div className="main-wrapper">
       <NavBar />
       <div className="hero">
-          <ToggleButton activeColor="" />
-          <ToggleButton activeColor="#2DBA4F" />
-          <ToggleButton activeColor="#FF8E00" />
-          <ToggleButton activeColor="#3348A4" />
-          <ToggleButton activeColor="" 
-                        isDisabled={true}
-          />
+        <StackedCards/>
       </div>  
     </div>
   );

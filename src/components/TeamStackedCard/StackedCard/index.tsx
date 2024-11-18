@@ -4,6 +4,7 @@ import upvote from "../../../assets/images/png/upvote.png";
 import comments from "../../../assets/images/png/comments.png";
 import arrowButton from "../../../assets/images/png/arrowButton.png";
 import { Tag } from "../../Tag/index";
+import { Avatar } from "../../Avatar";
 
 
 interface IStackedCard {
@@ -34,8 +35,7 @@ export const StackedCard: React.FC<IStackedCard> = ({
       <div className="card-content">
         <div className="card-author">
           <div className="author-info">
-            <img src={imageSrc} alt="profileAvatar" />
-              <h2 className="author-name">{username}</h2>
+            <Avatar sizes="medium" name={username} src={imageSrc}/>
           </div>
           <div className="favorite-icon">
             <img src={vectorStar} alt="estrela de favorito" />
