@@ -4,6 +4,7 @@ import { AuthModal } from "../../components/AuthModal";
 
 
 
+
 export const TestingPage: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const handleModal = () => setIsModalOpen(!isModalOpen)  
@@ -15,7 +16,6 @@ export const TestingPage: React.FC = () => {
         {
           isModalOpen && <AuthModal type="recovery" onClose={handleModal} />
         }
-          
       </div>  
     </div>
   );
