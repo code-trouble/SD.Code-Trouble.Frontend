@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import React from "react";
 
-export const NavBar: React.FC = () => {
+export const OldNavbar: React.FC = () => {
   const codeBrackets = "{code}";
 
   return (
