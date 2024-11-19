@@ -1,5 +1,5 @@
 import React from "react";
-import { OldNavbar } from "../../components/oldNavbar";
+import { NavBar } from "../../components/previewNavbar";
 import { TextButton } from "../../components/TextButton";
 import { ReactTyped } from "react-typed";
 

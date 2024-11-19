@@ -3,19 +3,17 @@ import vectorStar from "../../../assets/images/png/starVector.png";
 import upvote from "../../../assets/images/png/upvote.png";
 import comments from "../../../assets/images/png/comments.png";
 import arrowButton from "../../../assets/images/png/arrowButton.png";
-import { Tag } from "../../Tag/index";
-import { Avatar } from "../../Avatar";
-
+import { Tag } from "../Tag/index";
+import { Avatar } from "../Avatar";
 
 interface IStackedCard {
   username: string;
   headingTitle: string;
   subTitle: string;
   tagArray: string[];
-  onArrowClick: () => void; 
+  onArrowClick: () => void;
   imageSrc?: string;
   isDisabled: boolean;
-
 }
 
 export const StackedCard: React.FC<IStackedCard> = ({
@@ -25,7 +23,7 @@ export const StackedCard: React.FC<IStackedCard> = ({
   onArrowClick,
   tagArray,
   imageSrc,
-  isDisabled
+  isDisabled,
 }) => {
   return (
     <div className="card">
@@ -35,7 +33,7 @@ export const StackedCard: React.FC<IStackedCard> = ({
       <div className="card-content">
         <div className="card-author">
           <div className="author-info">
-            <Avatar sizes="medium" name={username} src={imageSrc}/>
+            <Avatar sizes="medium" name={username} src={imageSrc} />
           </div>
           <div className="favorite-icon">
             <img src={vectorStar} alt="estrela de favorito" />
@@ -43,16 +41,10 @@ export const StackedCard: React.FC<IStackedCard> = ({
         </div>
 
         <div className="card-body">
-          <h1 className="card-heading">
-            {headingTitle}
-          </h1>
-          <p className="card-description">
-            {subTitle}
-          </p>
+          <h1 className="card-heading">{headingTitle}</h1>
+          <p className="card-description">{subTitle}</p>
 
-          <Tag
-            tags={tagArray}
-          />
+          <Tag tags={tagArray} />
 
           <div className="card-details">
             <div className="details-left">
@@ -66,13 +58,15 @@ export const StackedCard: React.FC<IStackedCard> = ({
                 302
               </p>
             </div>
-            <div className={`details-right ${!isDisabled ? "active-arrow" : ""}`}>
+            <div
+              className={`details-right ${!isDisabled ? "active-arrow" : ""}`}
+            >
               <button
                 onClick={onArrowClick}
                 className="arrow-button"
                 disabled={isDisabled}
               >
-                <img className="arrow-button-img" src={arrowButton}  alt="" />
+                <img className="arrow-button-img" src={arrowButton} alt="" />
               </button>
             </div>
           </div>

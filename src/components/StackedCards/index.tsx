@@ -3,11 +3,8 @@ import { StackedCard } from "../StackedCard";
 import profileAvatar from "../../../assets/images/png/profileAvatar.png";
 import profileAvatar2 from "../../../assets/images/png/profileAvatar2.png";
 
-
-
 const CardTags = ["Chat GPT", "Design", "Auto-Ajuda", "Pix"];
-const CardTags2 = ["123", "Codigo", "Web", "Pix"];
-
+const CardTags2 = ["123", "Código", "Web", "Pix"];
 
 export const StackedCards: React.FC = () => {
   const [cardOrder, setCardOrder] = useState(["card-1", "card-2", "card-3"]);
@@ -26,7 +23,7 @@ export const StackedCards: React.FC = () => {
           tagArray={CardTags}
           onArrowClick={handleSwap}
           imageSrc={profileAvatar}
-          isDisabled={cardOrder[0] !== "card-1"} 
+          isDisabled={cardOrder[0] !== "card-1"}
         />
       </div>
       <div className={`individual-card ${cardOrder[1]}`}>
@@ -37,7 +34,7 @@ export const StackedCards: React.FC = () => {
           tagArray={CardTags}
           onArrowClick={handleSwap}
           imageSrc={profileAvatar2}
-          isDisabled={cardOrder[1] !== "card-1"} 
+          isDisabled={cardOrder[1] !== "card-1"}
         />
       </div>
       <div className={`individual-card ${cardOrder[2]}`}>
@@ -48,7 +45,7 @@ export const StackedCards: React.FC = () => {
           tagArray={CardTags2}
           onArrowClick={handleSwap}
           imageSrc={profileAvatar}
-          isDisabled={cardOrder[2] !== "card-1"} 
+          isDisabled={cardOrder[2] !== "card-1"}
         />
       </div>
     </div>

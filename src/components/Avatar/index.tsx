@@ -1,5 +1,4 @@
 import React from "react";
-
 import { ProfessorCorrea } from "../../assets/images/svg";
 
 function cleanName(name?: string): string {
