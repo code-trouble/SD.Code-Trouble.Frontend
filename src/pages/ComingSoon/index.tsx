@@ -1,12 +1,12 @@
 import React from "react";
-import { NavBar } from "../../components/oldNavbar";
+import { OldNavbar } from "../../components/oldNavbar";
 import { TextButton } from "../../components/TextButton";
 import { ReactTyped } from "react-typed";
 
 export const ComingSoonPage: React.FC = () => {
   return (
     <div className="main-wrapper">
-      <NavBar />
+      <OldNavbar/>
 
       <div className="hero">
         <ReactTyped
