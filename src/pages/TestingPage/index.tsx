@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { NavBar } from "../../components/previewNavbar";
+import { OldNavbar } from "../../components/previewNavbar";
 import { AuthModal } from "../../components/AuthModal";
 
 export const TestingPage: React.FC = () => {
