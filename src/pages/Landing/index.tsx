@@ -1,15 +1,11 @@
 import React from "react";
+import { Navbar } from "../../components/Navbar";
 
 
 export const LandingPage: React.FC = () => {
   return (
-    <div className="main-wrapper">
-
-
-      <div className="hero">
-
- 
-      </div>
+    <div>
+      <Navbar/>
     </div>
   );
 };
