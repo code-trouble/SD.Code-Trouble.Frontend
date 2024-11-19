@@ -2,8 +2,21 @@ import React, { useState } from "react";
 
 
 interface IToggleButton {
-    activeColor: string;
+    activeColor: 'base' | 'primary' | 'secondary' | 'tertiary' ;
     isDisabled?: boolean;
+}
+
+function generateButtonColor(activeColor: string) {
+    switch(activeColor) {    
+        case 'base':
+            return "#C9C9C9"
+        case 'primary':
+            return "#2DBA4F"
+        case 'secondary':
+            return "#FF8E00"
+        case 'tertiary':
+            return "#3348A4"
+    }
 }
 
 export const ToggleButton: React.FC<IToggleButton> = ({
@@ -19,7 +32,7 @@ export const ToggleButton: React.FC<IToggleButton> = ({
 
     return (
         <button disabled={isDisabled}  className={`button-wrapper ${isOn ? "on" : "off"}`} style={{
-            backgroundColor: isOn ? activeColor : "#C9C9C9", 
+            backgroundColor: isOn ? generateButtonColor(activeColor) : "#C9C9C9", 
         }}
         onClick={handleToggle}
         >
