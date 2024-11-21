@@ -278,8 +278,14 @@ nav {
             font-weight: 500;
         }
 
-        p {
+        .verPerfil {
             color: #269C42;
+            font-size: 12px;
+            font-family: $hindFont;
+        }
+
+        .verPerfilBlue {
+            color: #3348A4;
             font-size: 12px;
             font-family: $hindFont;
         }
