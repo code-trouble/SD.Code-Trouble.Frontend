@@ -4,7 +4,7 @@ import { Header } from "../../components/Header";
 export const LandingPage: React.FC = () => {
   return (
     <div className="main-wrapper">
-        <Header/>
+        <Header theme="blue" loggedIn={true}/>
     </div>
   );
 };
