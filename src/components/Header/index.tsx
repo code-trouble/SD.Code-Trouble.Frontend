@@ -85,7 +85,7 @@ export const Header: React.FC<IHeader> = ({theme, loggedIn}) => {
                   <Avatar sizes="medium"/>
                   <div className="burgerLoggedText">
                     <h1>Joana Lima</h1> 
-                    <p>Ver Perfil</p>
+                    <p className={theme === 'base' ? "verPerfil" : "verPerfilBlue"}>Ver Perfil</p>
                   </div>
                 </div>
               ) : (
