@@ -1,17 +1,34 @@
-import React, { useState } from "react";
+import React from "react";
 import { OldNavbar } from "../../components/previewNavbar";
-import { AuthModal } from "../../components/AuthModal";
+import CustomButton from "../../components/CustomButton";
+import buttonArrow from "../../assets/images/svg/buttonArrow.svg"
 
 export const TestingPage: React.FC = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const handleModal = () => setIsModalOpen(!isModalOpen);
+
   return (
     <div className="main-wrapper">
       <OldNavbar/>
       <div className="hero">
-        <button onClick={handleModal}>Open Modal</button>
-        {isModalOpen && <AuthModal type="recovery" onClose={handleModal} />}
-      </div>
+        <CustomButton 
+        text="Cadastro"
+        padding="8px 90px"
+        color="white" 
+        backgroundColor="#2DBA4F"
+        fontSize="18px"
+        fontWeight="500"
+        />
+
+        <CustomButton 
+        text="Visitar a comunidade"
+        padding="9.5px"
+        color="#3348A4" 
+        backgroundColor="transparent"
+        fontSize="18px"
+        fontWeight="500"
+        icon={buttonArrow}
+        />
+
+      </div>  
     </div>
   );
 };
