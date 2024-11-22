@@ -28,6 +28,15 @@ export const TestingPage: React.FC = () => {
         icon={buttonArrow}
         />
 
+        <CustomButton 
+        text="Visitar Blog"
+        padding="9.5px 80px"
+        color="white" 
+        backgroundColor="#3348A4"
+        fontSize="18px"
+        fontWeight="500"
+        />
+
       </div>  
     </div>
   );
