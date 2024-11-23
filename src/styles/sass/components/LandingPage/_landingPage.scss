@@ -126,3 +126,83 @@
     height: 17px;
 
 }
+
+
+@media (max-width: 940px) {
+
+    .landingContainer {
+        padding: 80px 98px;
+    }
+
+    .messageBox {
+        display: none;
+    }
+
+    .lowerHero {
+        flex-direction: column-reverse;
+        margin-top: 107px;
+        gap: 0;
+    }
+
+    .StackCardBlock {
+        margin-top: 0px;
+    }
+
+    
+    .StackCardBlock {
+        transform: scale(0.82);
+    }
+}
+
+
+@media (max-width: 430px) {
+    .heroTextH1 {
+        font-size: 32px;
+        line-height: 39px;
+        
+        .green-middle-line {
+            height: 17px;
+        }
+    }
+
+    .landingContainer {
+        padding: 60px 20px;
+    }
+    .customButtonWrapper {
+        flex-direction: column;
+        align-items: center;
+    }
+
+        .StackCardBlock {
+        transform: scale(0.72);
+    }
+
+
+    .lowerHero {
+        margin-top: 48px;
+    }
+
+    .lowerHeroRigthText {
+
+        margin-bottom: 48px;
+
+        .lowerHeroH1 {
+            font-size: 24px;
+            line-height: 29px;
+
+            .dev-blue-line {
+                height: 13px;
+            }
+        }
+
+        .lowerHeroPItalic {
+            font-size: 20px;
+        }
+
+        .lowerCustomButton {
+            justify-content: center;
+        }
+    }
+
+
+}
