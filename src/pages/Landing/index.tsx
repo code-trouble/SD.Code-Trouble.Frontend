@@ -43,7 +43,7 @@ export const LandingPage: React.FC = () => {
                 />
               </div>
             </div>
-            <div>
+            <div className="messageBox">
               <img src={messageBox} alt=""/>
             </div>
           </div>
@@ -55,7 +55,7 @@ export const LandingPage: React.FC = () => {
 
             <div className="lowerHeroRigthText">
               <div className="lowerHeroTextContent">
-                <h1 className="lowerHeroH1">Conheça nosso blog, de <span className="dev-blue-line">Devs</span> para <span className="dev-blue-line">Devs</span></h1>
+                <h1 className="lowerHeroH1">Conheça nosso blog, feito por <span className="dev-blue-line">Devs</span> para <span className="dev-blue-line">Devs</span></h1>
                 <p className="lowerHeroPItalic">Leia artigos da sua área de interesse.</p>
                 <p className="lowerHeroP">Os melhores artigos vão além das respostas, guiando vocẽ em cada descoberta</p>
               </div>
