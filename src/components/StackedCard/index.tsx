@@ -1,8 +1,8 @@
 import React from "react";
-import vectorStar from "../../../assets/images/png/starVector.png";
-import upvote from "../../../assets/images/png/upvote.png";
-import comments from "../../../assets/images/png/comments.png";
-import arrowButton from "../../../assets/images/png/arrowButton.png";
+import vectorStar from "../../assets/images/png/starVector.png";
+import upvote from "../../assets/images/png/upvote.png";
+import comments from "../../assets/images/png/comments.png";
+import arrowButton from "../../assets/images/svg/arrowButton.svg";
 import { Tag } from "../Tag/index";
 import { Avatar } from "../Avatar";
 
@@ -36,7 +36,7 @@ export const StackedCard: React.FC<IStackedCard> = ({
             <Avatar sizes="medium" name={username} src={imageSrc} />
           </div>
           <div className="favorite-icon">
-            <img src={vectorStar} alt="estrela de favorito" />
+            <img src={vectorStar} alt="estrela de favorito" /> 
           </div>
         </div>
 
@@ -50,11 +50,11 @@ export const StackedCard: React.FC<IStackedCard> = ({
             <div className="details-left">
               <p className="post-date">10 Nov, 2024</p>
               <p className="upvote-count">
-                <img src={upvote} alt="" />
+                <img src={upvote} alt="" /> 
                 120k
               </p>
               <p className="comment-count">
-                <img src={comments} alt="" />
+                <img src={comments} alt="" /> 
                 302
               </p>
             </div>
