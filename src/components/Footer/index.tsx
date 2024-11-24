@@ -18,14 +18,14 @@ export const Footer: React.FC = () => {
         alt="logo da code trouble completo"
       />
       <main>
-        <nav>
+        <nav className="exploreNav">
           <h1>Explore</h1>
           <a href="">Home</a>
           <a href="">Blog</a>
           <a href="">Questões</a>
         </nav>
-        <section>
-          <nav>
+        <section className="contactSection">
+          <nav className="contactNav">
             <h1>Entre em Contato</h1>
             <a href="">
               <img src={whatsApp} alt="" />
@@ -36,7 +36,7 @@ export const Footer: React.FC = () => {
               <p>suportededomingo@outlook.com</p>
             </a>
           </nav>
-          <nav>
+          <nav className="lowerContactNav">
             <h1>Nossas Redes & Comunidades</h1>
             <div className="social-medias">
               <a href="">
@@ -53,17 +53,17 @@ export const Footer: React.FC = () => {
               </a>
             </div>
           </nav>
-          <div className="footer-contact">
-            <div className="contact-text">
-              <h1>Receba Atualizações</h1>
-              <p>Se Inscreva na nossa NewsLetter.</p>
-            </div>
-            <form>
-              <input type="email" name="" id="" />
-              <button type="submit">Registrar-se</button>
-            </form>
-          </div>
         </section>
+        <div className="footer-contact">
+          <div className="updatesText">
+            <h1>Receba Atualizações</h1>
+            <p>Se Inscreva na nossa NewsLetter.</p>
+          </div>
+          <form className="footer-messageForm">
+            <input className="footerInput" placeholder="Digite seu email" type="email" name="" id="" />
+            <button type="submit">Registrar-se</button>
+          </form>
+        </div>
       </main>
       <div className="footer-bottom">
         <p>
