@@ -4,6 +4,7 @@ import messageBox from "../../assets/images/svg/messageBox.svg"
 import CustomButton from "../../components/CustomButton";
 import buttonArrow from "../../assets/images/svg/buttonArrow.svg"
 import { StackedCards } from "../../components/StackedCards";
+import { Footer } from "../../components/Footer";
 
 
 
@@ -74,6 +75,7 @@ export const LandingPage: React.FC = () => {
 
           </div>
         </div>
+        <Footer/>
     </div>
   );
 };
