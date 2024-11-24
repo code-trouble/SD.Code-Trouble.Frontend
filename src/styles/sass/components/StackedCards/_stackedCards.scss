@@ -1,8 +1,7 @@
 .cards-wrapper {
-    position: relative;
-    width: fit-content;
-    top: -250px;
-    left: -200px;
+  position: relative; 
+  display: inline-block; 
+  overflow: visible;
 
 
     .individual-card {

@@ -1,12 +1,12 @@
 import React from "react";
-import { NavBar } from "../../components/previewNavbar";
+import { OldNavbar } from "../../components/previewNavbar";
 import { TextButton } from "../../components/TextButton";
 import { ReactTyped } from "react-typed";
 
 export const ErrorPage: React.FC = () => {
   return (
     <div className="main-wrapper">
-      <NavBar />
+      <OldNavbar />
       <div className="hero">
         <h1 className="title main-wrapper-h1">
           404 <span className="hide-on-mobile">-</span>

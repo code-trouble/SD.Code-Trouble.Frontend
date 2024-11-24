@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { StackedCard } from "../StackedCard";
-import profileAvatar from "../../../assets/images/png/profileAvatar.png";
-import profileAvatar2 from "../../../assets/images/png/profileAvatar2.png";
+import profileAvatar from "../../assets/images/png/profileAvatar.png";
+import profileAvatar2 from "../../assets/images/png/profileAvatar2.png"
 
 const CardTags = ["Chat GPT", "Design", "Auto-Ajuda", "Pix"];
 const CardTags2 = ["123", "Código", "Web", "Pix"];
+
+
 
 export const StackedCards: React.FC = () => {
   const [cardOrder, setCardOrder] = useState(["card-1", "card-2", "card-3"]);

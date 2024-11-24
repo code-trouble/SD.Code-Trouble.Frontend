@@ -1,7 +1,8 @@
 @import './base/reset';
 @import './themes/variables';
 @import './components/avatar';
-@import './components/navBar';
+@import './components/oldNavBar';
+@import './components/Header/header';
 @import './components/pageStyles';
 @import './components/textButton';
 @import './components/StackedCards/stackedCard';
@@ -10,6 +11,8 @@
 @import './components/authModal';
 @import './components/authForm';
 @import './components/ToggleButton/toggleButton';
+@import './components/CustomButton/customButton';
+@import './components/LandingPage/landingPage';
 @import './components/Footer/footer';
 
 
