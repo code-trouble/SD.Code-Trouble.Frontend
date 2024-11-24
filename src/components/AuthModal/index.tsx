@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { logoCodePrimary, ProfessorCorrea } from "../../assets/images/svg";
 import { SignIn, SignUp, ForgotPassword, RecoveryPassword } from "./Form";
+import { logoCodePrimary } from "../../assets/images/svg/icons";
+import { ProfessorCorrea } from "../../assets/images/svg/illustration";
 
 interface IAuthModal {
   type: "signIn" | "signUp" | "recovery" | "forgot";

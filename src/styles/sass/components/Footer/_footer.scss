@@ -1,0 +1,209 @@
+footer {
+  display: flex;
+  flex-direction: column;
+
+  width: 100%;
+  height: 562px;
+  padding: 60px 62px;
+  justify-content: space-between;
+  background-color: $footer;
+
+
+  font-family: $montserratFont;
+  color: #F8F9FA;
+  font-weight: 600;
+  font-size: 16px;
+
+  .footer-logo {
+    width: 248px;
+    height: 42px;
+  }
+
+  main {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    gap: 180px;
+  }
+
+  .footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 15px;
+    width: 100%;
+    color: $whiteBase;
+  }
+
+   span {
+    font-weight: 600;
+  }
+
+  .exploreNav {
+    display: flex;
+    flex-direction: column;
+    gap: 17px;
+
+
+
+    a {
+      color: #DADADA;
+      font-size: 15px;
+      font-weight: 300;
+      font-family: $hindFont;
+    }
+  }
+
+
+
+  .social-medias {
+    display: flex;
+    align-items: center;
+    gap: 50px;
+  }
+
+  .contactSection {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+
+
+    .contactNav {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+
+      a {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-family: $hindFont;
+        color: #DADADA;
+        font-weight: 300;
+      }
+    }
+
+    .lowerContactNav {
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
+    }
+  }
+
+
+
+
+
+
+  .footer-contact {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 26px;
+
+    
+    .footerInput {
+      padding: 10px 14px;
+      background-color: white;
+      border-radius: 8px;
+      width: 382px;
+      height: 44px;
+    }
+    
+    .updatesText {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+
+      p {
+        font-family: $hindFont;
+        font-weight: 300;
+        font-size: 15px;
+        color: #DADADA;
+      }
+    }
+    
+  .footer-messageForm {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 26.5px;
+
+    button {
+      padding: 6px 29px;
+      color: white;
+      background-color: #3348A4;
+      border-radius: 8px;
+      height: 38px;
+    }
+  }
+}
+
+}
+
+.footer-bottom {
+  font-size: 15px;
+  font-weight: 300; 
+  color: #DADADA;
+  span {
+    font-weight: 500;
+    color: #F8F9FA;
+  }
+}
+
+
+
+@media (max-width: 1180px) {
+
+  footer{ 
+
+    padding: 60px 30px;
+
+    .footer-contact {
+      display: none;
+    }
+    
+    .footer-logo {
+        align-self: center;
+          
+    }
+
+    main {
+
+      gap: 239px;
+    }
+  } 
+}
+
+
+
+@media (max-width: 565px) {
+  footer {
+    height: 100%;
+
+    main {
+      margin-top: 107px;
+      margin-bottom: 107px;
+      align-items: center;
+      flex-direction: column;
+      gap: 107px;
+
+      .contactNav {
+        display: none!important;
+      }
+
+    }
+
+    .exploreNav {
+      align-items: center;
+    }
+
+
+    .footer-bottom {
+      flex-direction: column-reverse;
+      gap: 21px;
+    }
+
+  }
+}
+ 
