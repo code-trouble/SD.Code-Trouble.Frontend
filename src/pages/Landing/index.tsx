@@ -9,7 +9,7 @@ import { StackedCards } from "../../components/StackedCards";
 
 export const LandingPage: React.FC = () => {
   return (
-    <div className="main-wrapper">
+    <div className="landing-page-container">
         <Header theme="base" loggedIn={true}/>
         <div className="landingContainer">
           <div className="upperHero">
