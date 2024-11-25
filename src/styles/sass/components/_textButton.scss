@@ -9,12 +9,13 @@
     border: solid 1px $blackBase;
     transition: 0.5s ease;
     color: $blackBase;
-  }
 
-.text-button:hover {
-    background-color: $blackBase;
-    color: $whiteBase;
+    .text-button:hover {
+      background-color: $blackBase;
+      color: $whiteBase;
+  }  
 }
+
 
 @media (max-width: 650px) {
     .text-button {
