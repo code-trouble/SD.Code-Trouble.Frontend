@@ -1,4 +1,4 @@
-footer {
+.footer-container {
   display: flex;
   flex-direction: column;
 
@@ -35,7 +35,7 @@ footer {
     color: $whiteBase;
   }
 
-   span {
+  span {
     font-weight: 600;
   }
 
@@ -155,8 +155,7 @@ footer {
 
 @media (max-width: 1180px) {
 
-  footer{ 
-
+  .footer-container { 
     padding: 60px 30px;
 
     .footer-contact {
@@ -164,12 +163,10 @@ footer {
     }
     
     .footer-logo {
-        align-self: center;
-          
+      align-self: center;    
     }
 
     main {
-
       gap: 239px;
     }
   } 
@@ -178,7 +175,7 @@ footer {
 
 
 @media (max-width: 565px) {
-  footer {
+  .footer-container {
     height: 100%;
 
     main {
@@ -206,4 +203,3 @@ footer {
 
   }
 }
- 
