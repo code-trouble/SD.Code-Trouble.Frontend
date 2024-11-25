@@ -1,4 +1,4 @@
-header {
+.header-container {
     padding: 1.1rem 1.6rem;
     display: flex;
     align-items: center;
@@ -9,136 +9,137 @@ header {
     top: 0;
     z-index: 1000;
     width: 100%;
- 
-}
 
-.burguer-div, .hamburger {
-    display: none;
-    width: 25px;
-    height: 25px;
-}
-
-nav {
-    display: flex;
-    gap: 50px;
-    align-items: center;
-}
-
-.nav-links {
-    display: flex;
-    gap: 30px;
-}
-
-.nav-links a {
-    text-decoration: none;
-    font-family: $hindFont;
-    color: black;
-}
-
-.searchBar {
-    display: flex;
-    align-items: center;
-    border: 1px solid black;
-    width: 43.8rem;
-    padding: 0.5rem 1rem;
-    gap: 15px;
-    border-radius: 8px;
-    transition: width 0.5s ease-in-out;
-}
-
-.searchBar input {
-    border: none;
-    width: 100%;
-    min-width: 10px;
-}
-
-.searchBar input:focus {
-    outline: none;
-    box-shadow: none;
-}
-
-.small-logo {
-    display: none;
-}
-
-.authButtons {
-    display: flex;
-    gap: 30px;
-}
-
-
-
-.authButtons .cadastro {
-    width: 6rem;
-    height: 2.4rem;
-    color: $primaryColor;
-    background-color: transparent;
-    font-size: 1rem;
-    font-weight: 600;
-    font-family: $hindFont;
-    border: 2px solid #269C42;
-    border-radius: 8px;
-    cursor: pointer;
-}
-
-.authButtons .login {
-    width: 4.4rem;
-    height: 2.4rem;
-    background-color: $primaryColor;
-    color: white;
-    font-size: 1rem;
-    font-weight: 600;
-    font-family: $hindFont;
-    border: 2px solid #269C42;
-    border-radius: 8px;
-    cursor: pointer;
-}
-
-.authButtons .cadastroBlue {
-    width: 6rem;
-    height: 2.4rem;
-    color: #3348A4;
-    background-color: transparent;
-    font-size: 1rem;
-    font-weight: 600;
-    font-family: $hindFont;
-    border: 2px solid #3348A4;
-    border-radius: 8px;
-    cursor: pointer;
-}
-
-.authButtons .loginBlue {
-    width: 4.4rem;
-    height: 2.4rem;
-    background-color: #3348A4;
-    color: white;
-    font-size: 1rem;
-    font-weight: 600;
-    font-family: $hindFont;
-    border-radius: 8px;
-    cursor: pointer;
-}
-
-.loggedInContent {
-    display: flex;
-    gap: 30px
-}
-
-@media (max-width: 1400px) {
-    header {
-        gap: 17px;
+    .burguer-div, .hamburger {
+        display: none;
+        width: 25px;
+        height: 25px;
     }
-
-    .normal-logo {
+    
+    nav {
+        display: flex;
+        gap: 50px;
+        align-items: center;
+    }
+    
+    .nav-links {
+        display: flex;
+        gap: 30px;
+    }
+    
+    .nav-links a {
+        text-decoration: none;
+        font-family: $hindFont;
+        color: black;
+    }
+    
+    .searchBar {
+        display: flex;
+        align-items: center;
+        border: 1px solid black;
+        width: 43.8rem;
+        padding: 0.5rem 1rem;
+        gap: 15px;
+        border-radius: 8px;
+        transition: width 0.5s ease-in-out;
+    }
+    
+    .searchBar input {
+        border: none;
+        width: 100%;
+        min-width: 10px;
+    }
+    
+    .searchBar input:focus {
+        outline: none;
+        box-shadow: none;
+    }
+    
+    .small-logo {
         display: none;
     }
-
-    .small-logo {
-        display: block;
+    
+    .authButtons {
+        display: flex;
+        gap: 30px;
     }
+    
+    
+    
+    .authButtons .cadastro {
+        width: 6rem;
+        height: 2.4rem;
+        color: $primaryColor;
+        background-color: transparent;
+        font-size: 1rem;
+        font-weight: 600;
+        font-family: $hindFont;
+        border: 2px solid #269C42;
+        border-radius: 8px;
+        cursor: pointer;
+    }
+    
+    .authButtons .login {
+        width: 4.4rem;
+        height: 2.4rem;
+        background-color: $primaryColor;
+        color: white;
+        font-size: 1rem;
+        font-weight: 600;
+        font-family: $hindFont;
+        border: 2px solid #269C42;
+        border-radius: 8px;
+        cursor: pointer;
+    }
+    
+    .authButtons .cadastroBlue {
+        width: 6rem;
+        height: 2.4rem;
+        color: #3348A4;
+        background-color: transparent;
+        font-size: 1rem;
+        font-weight: 600;
+        font-family: $hindFont;
+        border: 2px solid #3348A4;
+        border-radius: 8px;
+        cursor: pointer;
+    }
+    
+    .authButtons .loginBlue {
+        width: 4.4rem;
+        height: 2.4rem;
+        background-color: #3348A4;
+        color: white;
+        font-size: 1rem;
+        font-weight: 600;
+        font-family: $hindFont;
+        border-radius: 8px;
+        cursor: pointer;
+    }
+    
+    .loggedInContent {
+        display: flex;
+        gap: 30px
+    }
+}
 
-    .searchBar {
-        width: 37.5rem;
+
+
+@media (max-width: 1400px) {
+    .header-container {
+        gap: 17px;
+
+        .normal-logo {
+            display: none;
+        }
+    
+        .small-logo {
+            display: block;
+        }
+    
+        .searchBar {
+            width: 37.5rem;
+        }
     }
 }
 
@@ -146,176 +147,178 @@ nav {
 
 
 @media (max-width: 600px) {
-    
-    .burguer-div, .hamburger {
-        display: block;
-    }
-
-
-    .NotificationBell {
-        display: none;
-    }
-    
-
-
-    .nav-links, .authButtons {
-        display: none;
-    }
-    
-    .hamburger-menu {
-        position: absolute;
-        margin-top: 24px;
-        right: -100%;
-        height: 310px;
-        width: 264px;
-        display: flex;
-        flex-direction: column;
-        background-color: white;
-        border-top-left-radius: 20px;
-        border-bottom-left-radius: 20px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-        padding: 20px;
-        z-index: 10;
-        transition: right 0.3s ease;
-        overflow: hidden;
-    }
-    
-    .hamburger-menu.open {
-        right: 0;
-    }
-    
-    .background-overlay {
-        display: block;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        background-color: rgba(0, 0, 0, 0.5);
-        opacity: 0;
-        pointer-events: none;
-        z-index: 9;
-    }
-    
-    .background-overlay.visible {
-        opacity: 1;
-        pointer-events: auto;
-    }
-    
-
-    
-
-    .auth-buttons {
-        margin-top: 10px;
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start; 
-        position: relative; 
-       
-    }
-
-    .auth-buttons img {
-        padding-top: 3px;
-    }
-
-
-    .auth-col {
-        display: flex;
-        flex-direction: column;
-        width: 224px;
-        gap: 16px;
-        align-items: flex-start;
-        justify-content: center;
-    }
-    
-    .auth-buttons .login {
-        color:  $primaryColor;
-        font-size: 24px;
-        font-weight: 600;
-        font-family: $montserratFont;
-    }
-
-    .auth-buttons .cadastro {
-        color: $primaryColor;
-        background-color: transparent;
-        font-size: 24px;
-        font-weight: 600;
-        font-family: $montserratFont;
-        margin-bottom: 30px;
-    }    
-    
-    .auth-buttons .loginBlue {
-        color:  #3348A4;
-        font-size: 24px;
-        font-weight: 600;
-        font-family: $montserratFont;
-        cursor: pointer;
-    }
-
-    .auth-buttons .cadastroBlue {
-        color: #3348A4;
-        background-color: transparent;
-        font-size: 24px;
-        font-weight: 600;
-        font-family: $montserratFont;
-        margin-bottom: 30px;
-        cursor: pointer;
-    }    
-
-    .BurgerloggedInContent {
-        display: flex;
-        align-items: center;
-        margin-bottom: 20px;
-    }
-
-    .burgerLoggedText {
-        display: flex;
-        flex-direction: column;
-        gap: 5px;
-
-        h1 {
-            font-family: $montserratFont;
-            font-weight: 500;
+    .header-container {
+        .burguer-div, .hamburger {
+            display: block;
         }
-
-        .verPerfil {
-            color: #269C42;
-            font-size: 12px;
-            font-family: $hindFont;
-        }
-
-        .verPerfilBlue {
-            color: #3348A4;
-            font-size: 12px;
-            font-family: $hindFont;
-        }
-    }
     
-    .sair {
-        color: $dangerColor!important;
-    }
-
-    .nav-links-column {
-        border-top: 1px solid #C9C9C9;
-        display: flex;
-        flex-direction: column;
+    
+        .NotificationBell {
+            display: none;
+        }
         
-        padding-top: 20px;
-    }
-
-
-    .nav-links-column a {
-        font-family: $montserratFont;
-        color: black;
-        font-weight: 600;
-    }
-
-    .icon-with-a {
-        display: flex;
-        align-items: center;
-        gap: 11.5px;
-        height: 48px;
-    }
-
     
+    
+        .nav-links, .authButtons {
+            display: none;
+        }
+        
+        .hamburger-menu {
+            position: absolute;
+            margin-top: 24px;
+            right: -100%;
+            height: 310px;
+            width: 264px;
+            display: flex;
+            flex-direction: column;
+            background-color: white;
+            border-top-left-radius: 20px;
+            border-bottom-left-radius: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            z-index: 10;
+            transition: right 0.3s ease;
+            overflow: hidden;
+        }
+        
+        .hamburger-menu.open {
+            right: 0;
+        }
+        
+        .background-overlay {
+            display: block;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            pointer-events: none;
+            z-index: 9;
+        }
+        
+        .background-overlay.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        
+    
+        
+    
+        .auth-buttons {
+            margin-top: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start; 
+            position: relative; 
+    
+        }
+    
+        .auth-buttons img {
+            padding-top: 3px;
+        }
+    
+    
+        .auth-col {
+            display: flex;
+            flex-direction: column;
+            width: 224px;
+            gap: 16px;
+            align-items: flex-start;
+            justify-content: center;
+        }
+        
+        .auth-buttons .login {
+            color:  $primaryColor;
+            font-size: 24px;
+            font-weight: 600;
+            font-family: $montserratFont;
+        }
+    
+        .auth-buttons .cadastro {
+            color: $primaryColor;
+            background-color: transparent;
+            font-size: 24px;
+            font-weight: 600;
+            font-family: $montserratFont;
+            margin-bottom: 30px;
+        }    
+        
+        .auth-buttons .loginBlue {
+            color:  #3348A4;
+            font-size: 24px;
+            font-weight: 600;
+            font-family: $montserratFont;
+            cursor: pointer;
+        }
+    
+        .auth-buttons .cadastroBlue {
+            color: #3348A4;
+            background-color: transparent;
+            font-size: 24px;
+            font-weight: 600;
+            font-family: $montserratFont;
+            margin-bottom: 30px;
+            cursor: pointer;
+        }    
+    
+        .BurgerloggedInContent {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+    
+        .burgerLoggedText {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+    
+            h1 {
+                font-family: $montserratFont;
+                font-weight: 500;
+            }
+    
+            .verPerfil {
+                color: #269C42;
+                font-size: 12px;
+                font-family: $hindFont;
+            }
+    
+            .verPerfilBlue {
+                color: #3348A4;
+                font-size: 12px;
+                font-family: $hindFont;
+            }
+        }
+        
+        .sair {
+            color: $dangerColor!important;
+        }
+    
+        .nav-links-column {
+            border-top: 1px solid #C9C9C9;
+            display: flex;
+            flex-direction: column;
+            
+            padding-top: 20px;
+        }
+    
+    
+        .nav-links-column a {
+            font-family: $montserratFont;
+            color: black;
+            font-weight: 600;
+        }
+    
+        .icon-with-a {
+            display: flex;
+            align-items: center;
+            gap: 11.5px;
+            height: 48px;
+        }
+    
+        
+    }
+
 }
