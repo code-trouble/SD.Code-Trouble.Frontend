@@ -1,5 +1,5 @@
 @import './base/reset';
-@import './themes/variables';
+@import './base/variables';
 @import './components/avatar';
 @import './components/oldNavBar';
 @import './components/Header/header';
@@ -12,7 +12,7 @@
 @import './components/authForm';
 @import './components/ToggleButton/toggleButton';
 @import './components/CustomButton/customButton';
-@import './components/LandingPage/landingPage';
+@import './pages/LandingPage/landingPage';
 @import './components/Footer/footer';
 
 

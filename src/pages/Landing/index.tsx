@@ -4,7 +4,7 @@ import messageBox from "../../assets/images/svg/messageBox.svg"
 import CustomButton from "../../components/CustomButton";
 import buttonArrow from "../../assets/images/svg/buttonArrow.svg"
 import { StackedCards } from "../../components/StackedCards";
-
+import { Footer } from "../../components/Footer";
 
 
 export const LandingPage: React.FC = () => {
@@ -57,7 +57,7 @@ export const LandingPage: React.FC = () => {
               <div className="lowerHeroTextContent">
                 <h1 className="lowerHeroH1">Conheça nosso blog, feito por <span className="dev-blue-line">Devs</span> para <span className="dev-blue-line">Devs</span></h1>
                 <p className="lowerHeroPItalic">Leia artigos da sua área de interesse.</p>
-                <p className="lowerHeroP">Os melhores artigos vão além das respostas, guiando vocẽ em cada descoberta</p>
+                <p className="lowerHeroP">Os melhores artigos vão além das respostas, guiando você em cada descoberta</p>
               </div>
               <div className="lowerCustomButton">
                 <CustomButton
@@ -74,6 +74,7 @@ export const LandingPage: React.FC = () => {
 
           </div>
         </div>
+        <Footer/>
     </div>
   );
 };
