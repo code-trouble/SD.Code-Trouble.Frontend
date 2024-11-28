@@ -1,15 +1,11 @@
-import React, { useState } from "react";
-import { OldNavbar } from "../../components/previewNavbar";
-
-import { Footer } from "../../components/Footer";
-
+import React from "react";
+import { Header } from "../../components/Header";
 export const TestingPage: React.FC = () => {
 
   return (
     <div className="main-wrapper">
-      <OldNavbar/>
-
-      <Footer />
+      <Header theme="blue" loggedIn={true}/>
+      
     </div>
   );
 };
