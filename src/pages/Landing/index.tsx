@@ -4,12 +4,12 @@ import messageBox from "../../assets/images/svg/messageBox.svg"
 import CustomButton from "../../components/CustomButton";
 import buttonArrow from "../../assets/images/svg/buttonArrow.svg"
 import { StackedCards } from "../../components/StackedCards";
-
+import { Footer } from "../../components/Footer";
 
 
 export const LandingPage: React.FC = () => {
   return (
-    <div className="main-wrapper">
+    <div className="landing-page-container">
         <Header theme="base" loggedIn={true}/>
         <div className="landingContainer">
           <div className="upperHero">
@@ -29,7 +29,6 @@ export const LandingPage: React.FC = () => {
                   color="white"
                   fontSize="18px"
                   fontWeight="500"
-                  
                 />
 
                 <CustomButton 
@@ -57,7 +56,7 @@ export const LandingPage: React.FC = () => {
               <div className="lowerHeroTextContent">
                 <h1 className="lowerHeroH1">Conheça nosso blog, feito por <span className="dev-blue-line">Devs</span> para <span className="dev-blue-line">Devs</span></h1>
                 <p className="lowerHeroPItalic">Leia artigos da sua área de interesse.</p>
-                <p className="lowerHeroP">Os melhores artigos vão além das respostas, guiando vocẽ em cada descoberta</p>
+                <p className="lowerHeroP">Os melhores artigos vão além das respostas, guiando você em cada descoberta</p>
               </div>
               <div className="lowerCustomButton">
                 <CustomButton
@@ -67,13 +66,13 @@ export const LandingPage: React.FC = () => {
                   color="white"
                   fontSize="18px"
                   fontWeight="500"
-                  
                 />
               </div>
             </div>
 
           </div>
         </div>
+        <Footer/>
     </div>
   );
 };

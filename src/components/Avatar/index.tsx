@@ -1,5 +1,5 @@
 import React from "react";
-import { ProfessorCorrea } from "../../assets/images/svg";
+import { ProfessorCorrea } from "../../assets/images/svg/illustration";
 
 function cleanName(name?: string): string {
   if (!name) return "";

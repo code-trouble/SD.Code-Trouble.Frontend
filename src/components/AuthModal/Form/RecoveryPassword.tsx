@@ -29,7 +29,7 @@ export const RecoveryPassword: React.FC = () => {
     console.log(data)
   }
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form className="auth-form"  onSubmit={handleSubmit(onSubmit)}>
       <div className="input-wrapper">
         <section>
           <label htmlFor="email">Email</label>

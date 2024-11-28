@@ -1,18 +1,18 @@
 @import './base/reset';
-@import './themes/variables';
-@import './components/avatar';
-@import './components/oldNavBar';
+@import './base/variables';
+@import './components/OldLanding/oldNavBar';
+@import './components/OldLanding/pageStyles';
+@import './components/OldLanding/textButton';
 @import './components/Header/header';
-@import './components/pageStyles';
-@import './components/textButton';
+@import './components/Avatar/avatar';
 @import './components/StackedCards/stackedCard';
 @import './components/StackedCards/stackedCards';
 @import './components/Tag/tagStyles';
-@import './components/authModal';
-@import './components/authForm';
+@import './components/AuthModal/authModal';
+@import './components/AuthModal/authForm';
 @import './components/ToggleButton/toggleButton';
 @import './components/CustomButton/customButton';
-@import './components/LandingPage/landingPage';
+@import './pages/LandingPage/landingPage';
 @import './components/Footer/footer';
 
 

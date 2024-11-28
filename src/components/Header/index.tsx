@@ -26,7 +26,7 @@ export const Header: React.FC<IHeader> = ({theme, loggedIn}) => {
   const toggleMenu = () => setMenuOpen(!menuOpen);
 
   return (
-    <header>
+    <header className="header-container">
       <div className="logo-container">
         <img 
         className="normal-logo" 

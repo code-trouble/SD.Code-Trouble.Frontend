@@ -24,7 +24,7 @@ export const SignUp: React.FC = () => {
     console.log(data);
   };
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form className="auth-form" onSubmit={handleSubmit(onSubmit)}>
       <div className="input-wrapper">
         <section>
           <label htmlFor="social-name">Nome Social</label>

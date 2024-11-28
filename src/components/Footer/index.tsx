@@ -11,7 +11,7 @@ import {
 
 export const Footer: React.FC = () => {
   return (
-    <footer>
+    <footer className="footer-container">
       <img
         className="footer-logo"
         src={logoCodePrimaryFull}
