@@ -24,7 +24,7 @@ export const SignIn: React.FC = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form className="auth-form"  onSubmit={handleSubmit(onSubmit)}>
       <div className="input-wrapper">
         <section>
           <label htmlFor="email">Email</label>
