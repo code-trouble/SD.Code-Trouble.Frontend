@@ -29,7 +29,6 @@ export const LandingPage: React.FC = () => {
                   color="white"
                   fontSize="18px"
                   fontWeight="500"
-                  
                 />
 
                 <CustomButton 
@@ -67,7 +66,6 @@ export const LandingPage: React.FC = () => {
                   color="white"
                   fontSize="18px"
                   fontWeight="500"
-                  
                 />
               </div>
             </div>
