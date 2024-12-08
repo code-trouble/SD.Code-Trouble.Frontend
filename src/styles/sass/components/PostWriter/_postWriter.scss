@@ -1,0 +1,317 @@
+.postWriter-container {
+    width: 67em;
+    margin: 80px auto;
+    position: relative;
+
+    .separator {
+        display: inline-block;
+        height: 26px;
+        width: 1px;
+        background-color: #808080;
+        margin-left: 26px;
+        margin-right: 35px;
+        border-left: 1px solid transparent;
+    }
+
+    .ql-toolbar {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background-color: $onyx;
+        padding: 17px 25px !important;
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+        display: flex;
+        align-items: center;
+
+
+        .ql-formats {
+            display: flex;
+            justify-content: center;
+
+            :hover {
+                cursor: pointer;
+            }
+
+
+            > :not(:last-child) {
+                margin-right: 45px;
+            }
+
+            button {
+                display: flex;
+                align-items: center;
+                color: white;
+                font-size: 20px;
+                cursor: pointer;
+                background: none;
+                border: none;
+                width: fit-content;
+                font-family: $montserratFont;
+
+                img {
+                    width: 32px;
+                    height: 24px;
+                }
+            }
+
+            .ql-bold {
+                font-weight: bold;
+            }
+
+            .ql-italic {
+                font-family: $loraItalicFont;
+                font-style: italic;
+            }
+
+            .ql-underline {
+                text-decoration: underline;
+                font-weight: 600;
+            }
+
+            .ql-strike {
+                text-decoration: line-through;
+                font-weight: 600;
+            }
+        }
+
+        .ql-code-block,
+        .ql-list[value="bullet"],
+        .ql-list[value="ordered"],
+        .ql-image,
+        .ql-video,
+        .ql-link {
+            color: white;
+            background: none;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            img {
+                width: 32px;
+                height: 24px;
+            }
+        }
+    }
+
+    .editor-container {
+        border: 1px solid #ccc;
+        border-bottom-left-radius: 8px;
+        border-bottom-right-radius: 8px;
+        padding: 50px 35px;
+        background-color: white;
+    }
+
+    .editor-form {
+        height: 100vh;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+    
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+    
+        ::-webkit-scrollbar-thumb {
+            background-color: $onyx;
+            border-radius: 12px;
+            border: none ;
+        }
+    
+        ::-webkit-scrollbar-track {
+            background-color: #f5f5f5;
+            border-radius: 12px;
+            margin: 0;
+        }
+    
+        ::-webkit-scrollbar-button {
+            display: none;
+        }
+    
+        ::-webkit-scrollbar-corner {
+            background-color: transparent;
+        }
+    
+        scrollbar-color: $onyx #C9C9C9;
+        scrollbar-width: thin;
+    }
+    
+    .editor-title {
+        width: 100%;
+        height: 59px;
+        font-size: 40px;
+        font-family: $montserratFont;
+        color: $onyx;
+        font-weight: 600;
+        border: none;
+        line-height: 1.5;
+        overflow: hidden;
+        resize: none;
+    }
+    
+    .editor-title:focus {
+        outline: none;
+    }
+
+    .editor-tags {
+        padding-left: 15px;
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+        gap: 20px;
+
+        .tags-button-wrapper {
+            position: relative;
+        }
+    
+
+        .tags-button {
+            position: relative;
+            width: fit-content;
+            font-size: 16px;
+            font-family: $montserratFont;
+            padding: 10px 0px;
+            border: none;
+            background: white;
+            color: gray; 
+            text-align: left; 
+            cursor: pointer;
+
+            :hover {
+                color: black;
+            }
+
+            :focus {
+                outline: none;
+            }
+            
+            
+        }
+
+    }
+
+    .editor-area {
+        min-height: 700px;
+        height: auto;
+        background-color: white;
+        border: none!important;
+        border-radius: 5px;
+        font-size: 18px;
+        font-family: $hindFont;
+        overflow: visible;
+    }   
+
+    .editor-area .ql-editor::before {
+        content: attr(data-placeholder);
+        color: gray; 
+        font-family: $montserratFont;
+        position: absolute;
+        font-style: normal;
+        pointer-events: none; 
+        padding-left: -93px;
+        font-size: 24px; 
+    }
+    
+
+    
+
+    .submit-button {
+        display: block;
+        margin: 20px auto;
+        padding: 10px 20px;
+        font-size: 18px;
+        color: white;
+        background-color: #007bff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+
+        &:hover {
+            background-color: #0056b3;
+        }
+    }
+    
+
+    .editor-tags {
+        position: relative;
+        display: flex;
+        align-items: center;
+        border-top: 1px solid #ccc;
+        border-bottom: 1px solid #ccc;
+        padding: 5px 10px;
+        background-color: white;
+        overflow: visible;
+        white-space: nowrap;
+        z-index: 1;
+    }
+    
+
+    
+
+    .tags-dropdown {
+        position: absolute;
+        top: calc(100% + 5px);
+        left: 0;
+        background: white;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 10px;
+        z-index: 9999;
+        min-width: 150px;
+        max-height: 200px;
+        overflow-y: auto;
+    }
+    
+    .dropdown-tag-item {
+        display: block;
+        padding: 8px 12px;
+        background: #f9f9f9;
+        border: none;
+        text-align: left;
+        width: 100%;
+        cursor: pointer;
+        font-family: "Montserrat", sans-serif;
+        font-size: 14px;
+        color: #333;
+        border-radius: 4px;
+        transition: background-color 0.2s ease;
+        margin-bottom: 5px;
+    }
+    
+    .dropdown-tag-item:hover {
+        background-color: #eaeaea;
+    }
+    
+    .tags-container {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+        padding: 20px 0px;
+    }
+
+    .tag-list {
+        width: 100%;
+    }
+    
+    .tag-item {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 6px 14px;
+    }
+
+    .tag-item button {
+        background: none;
+        border: none;
+        color: red;
+        font-size: 16px;
+        cursor: pointer;
+    }
+    
+    
+}
