@@ -7,7 +7,9 @@ import toolbarOrdered from '../../assets/images/svg/toolbarOrderedList.svg';
 import toolbarImg from '../../assets/images/svg/toolbarImg.svg';
 import toolbarVideo from '../../assets/images/svg/toolbarVideo.svg';
 import toolbarLink from '../../assets/images/svg/toolbarLink.svg';
+import favoriteBadge from '../../assets/images/svg/blueFavorite.svg';
 import { Tag } from '../Tag';
+import CustomButton from '../CustomButton';
 
 export const PostWriter: React.FC = () => {
     const quillRef = useRef<HTMLDivElement>(null);
@@ -70,6 +72,23 @@ export const PostWriter: React.FC = () => {
             toolbarContainer.querySelector('.ql-link')!.innerHTML = `<img src="${toolbarLink}" alt="Link" />`;
             toolbarContainer.querySelector('.ql-image')!.innerHTML = `<img src="${toolbarImg}" alt="Image" />`;
             toolbarContainer.querySelector('.ql-video')!.innerHTML = `<img src="${toolbarVideo}" alt="Video" />`;
+
+            const toggleFormats = (button: Element, format: string) => {
+                button.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const range = editorRef.current?.getSelection();
+                    if (range) {
+                        const currentFormat = editorRef.current?.getFormat(range) || {};
+                        editorRef.current?.format(format, !currentFormat[format]);
+                    }
+                });
+            };
+
+            toggleFormats(toolbarContainer.querySelector('.ql-bold')!, 'bold');
+            toggleFormats(toolbarContainer.querySelector('.ql-italic')!, 'italic');
+            toggleFormats(toolbarContainer.querySelector('.ql-underline')!, 'underline');
+            toggleFormats(toolbarContainer.querySelector('.ql-strike')!, 'strike');
+            toggleFormats(toolbarContainer.querySelector('.ql-code-block')!, 'code-block');
         }
     }, []);
 
@@ -95,6 +114,23 @@ export const PostWriter: React.FC = () => {
 
     return (
         <div className="postWriter-container">
+                
+            <div className="submitArea">
+
+                <div className='submitButtons'>
+                    <button>
+                        <img src={favoriteBadge} alt="favoritar"/>
+                    </button>
+                    <CustomButton
+                        text='Postar'
+                        padding='10px 100px'
+                        color='white'
+                        backgroundColor='#3348A4'
+                        fontSize='18px'
+                        fontWeight='500'
+                    />
+                </div>
+            </div>
             {/* Toolbar */}
             <div id="custom-toolbar" className="custom-toolbar">
                 <span className="ql-formats">
@@ -176,11 +212,7 @@ export const PostWriter: React.FC = () => {
                     {/* Área do editor */}
                     <div ref={quillRef} className="editor-area"></div>
                 </div>
-    
-                {/* Botão de enviar */}
-                <button type="submit" className="submit-button">
-                    Enviar Post
-                </button>
+
             </form>
         </div>
     );
