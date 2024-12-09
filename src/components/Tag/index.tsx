@@ -14,7 +14,7 @@ export const Tag: React.FC<ITag> = ({ tags, onTagRemove }) => {
                     className="tag-item"
                     onClick={() => onTagRemove && onTagRemove(tag)}
                 >
-                    {tag} {onTagRemove && <span>&times;</span>}
+                    {tag} {onTagRemove && ''}
                 </button>
             ))}
         </div>
