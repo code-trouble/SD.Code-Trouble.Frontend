@@ -3,13 +3,28 @@
     margin: 80px auto;
     position: relative;
 
+    .submitArea {
+        display: flex;
+        justify-content: flex-end!important;
+
+        .submitButtons {
+            display: flex;
+            gap: 25px;
+            margin-bottom: 13px;
+        }
+    }
+
+    .ql-toolbar.ql-snow .ql-formats {
+        margin-right: 0px;
+    }
+    
     .separator {
         display: inline-block;
         height: 26px;
         width: 1px;
         background-color: #808080;
-        margin-left: 26px;
-        margin-right: 35px;
+        margin-left: 20px;
+        margin-right: 20px;
         border-left: 1px solid transparent;
     }
 
@@ -18,26 +33,18 @@
         top: 0;
         z-index: 10;
         background-color: $onyx;
-        padding: 17px 25px !important;
+        padding: 0!important;
         border-top-left-radius: 8px;
         border-top-right-radius: 8px;
         display: flex;
         align-items: center;
-
+        overflow: hidden;
 
         .ql-formats {
             display: flex;
             justify-content: center;
 
-            :hover {
-                cursor: pointer;
-            }
-
-
-            > :not(:last-child) {
-                margin-right: 45px;
-            }
-
+            
             button {
                 display: flex;
                 align-items: center;
@@ -46,54 +53,116 @@
                 cursor: pointer;
                 background: none;
                 border: none;
-                width: fit-content;
+                position: relative;
                 font-family: $montserratFont;
-
-                img {
-                    width: 32px;
-                    height: 24px;
-                }
+                height: 64px;
+            }
+            button:hover {
+                cursor: pointer;
+                background-color: rgba(217, 217, 217, 0.1);
+                color: white;
             }
 
+            button:hover {
+                cursor: pointer;
+                background-color: rgba(217, 217, 217, 0.1);
+                color: white;
+            }
+        
+            button::after {
+                content: attr(data-tooltip); /* Use the data-tooltip attribute */
+                position: absolute;
+                bottom: 100%; /* Position the bubble above the button */
+                left: 50%;
+                transform: translateX(-50%);
+                background-color: rgba(217, 217, 217, 0.9);
+                color: white;
+                padding: 5px 10px;
+                border-radius: 5px;
+                font-size: 14px;
+                white-space: nowrap;
+                opacity: 0;
+                visibility: hidden;
+                transition: opacity 0.2s ease-in-out, visibility 0.2s ease-in-out;
+                z-index: 1000;
+            }
+        
+            button:hover::after {
+                opacity: 1;
+                visibility: visible;
+            }
+            
             .ql-bold {
+                display: flex;
+                justify-content: center;
+                width: 100px;
                 font-weight: bold;
+                
             }
 
             .ql-italic {
+                display: flex;
+                justify-content: center;
+                width: 100px;
                 font-family: $loraItalicFont;
                 font-style: italic;
+                font-weight: 600
             }
 
             .ql-underline {
+                display: flex;
+                justify-content: center;
+                width: 128px;
                 text-decoration: underline;
                 font-weight: 600;
             }
 
             .ql-strike {
+                display: flex;
+                justify-content: center;
+                width: 128px;
                 text-decoration: line-through;
                 font-weight: 600;
             }
         }
 
-        .ql-code-block,
-        .ql-list[value="bullet"],
-        .ql-list[value="ordered"],
         .ql-image,
         .ql-video,
         .ql-link {
-            color: white;
-            background: none;
-            border: none;
-            cursor: pointer;
             display: flex;
-            align-items: center;
             justify-content: center;
+            width: 75px;
+
+            img {
+                width: 20px;
+                height: 20px;
+            }
+        }
+
+        .ql-code-block {
+            display: flex;
+            justify-content: center;
+            width: 102px;
 
             img {
                 width: 32px;
                 height: 24px;
             }
         }
+
+        
+        .ql-list[value="bullet"],
+        .ql-list[value="ordered"] {
+            display: flex;
+            justify-content: center;
+            width: 102px;
+
+            img {
+                width: 30px;
+                height: 20px;
+            }
+        }
+
     }
 
     .editor-container {
@@ -157,12 +226,6 @@
     }
 
     .editor-tags {
-        padding-left: 15px;
-        display: flex;
-        align-items: center;
-        margin-bottom: 15px;
-        gap: 20px;
-
         .tags-button-wrapper {
             position: relative;
         }
@@ -173,11 +236,12 @@
             width: fit-content;
             font-size: 16px;
             font-family: $montserratFont;
-            padding: 10px 0px;
+            padding: 5px 0px;
             border: none;
             background: white;
             color: gray; 
             text-align: left; 
+
             cursor: pointer;
 
             :hover {
@@ -194,7 +258,7 @@
     }
 
     .editor-area {
-        min-height: 700px;
+        min-height: 300px;
         height: auto;
         background-color: white;
         border: none!important;
@@ -204,6 +268,11 @@
         overflow: visible;
     }   
 
+    .ql-editor {
+        padding: 0px;
+        overflow: hidden;
+    }
+
     .editor-area .ql-editor::before {
         content: attr(data-placeholder);
         color: gray; 
@@ -211,27 +280,12 @@
         position: absolute;
         font-style: normal;
         pointer-events: none; 
-        padding-left: -93px;
-        font-size: 24px; 
+        font-size: 24px;
+        top: 0;
+        left: 4px;
     }
-    
-
-    
-
-    .submit-button {
-        display: block;
-        margin: 20px auto;
-        padding: 10px 20px;
-        font-size: 18px;
-        color: white;
-        background-color: #007bff;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-
-        &:hover {
-            background-color: #0056b3;
-        }
+    .editor-area .ql-editor:focus::before {
+        content: ''; /* Hide placeholder when the editor is focused */
     }
     
 
@@ -241,7 +295,8 @@
         align-items: center;
         border-top: 1px solid #ccc;
         border-bottom: 1px solid #ccc;
-        padding: 5px 10px;
+        padding: 5px 0px;
+        margin-bottom: 15px;
         background-color: white;
         overflow: visible;
         white-space: nowrap;
@@ -291,7 +346,7 @@
         align-items: center;
         gap: 10px;
         flex-wrap: wrap;
-        padding: 20px 0px;
+        padding: 10PX 0px;
     }
 
     .tag-list {
@@ -303,6 +358,7 @@
         align-items: center;
         gap: 15px;
         padding: 6px 14px;
+        margin-right: 10px;
     }
 
     .tag-item button {
