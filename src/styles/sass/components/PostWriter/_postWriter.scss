@@ -17,6 +17,12 @@
     .ql-toolbar.ql-snow .ql-formats {
         margin-right: 0px;
     }
+
+    .ql-formats button::after {
+        content: none !important; 
+    }
+    
+
     
     .separator {
         display: inline-block;
@@ -38,7 +44,7 @@
         border-top-right-radius: 8px;
         display: flex;
         align-items: center;
-        overflow: hidden;
+        
 
         .ql-formats {
             display: flex;
@@ -68,29 +74,24 @@
                 background-color: rgba(217, 217, 217, 0.1);
                 color: white;
             }
-        
+
             button::after {
-                content: attr(data-tooltip); /* Use the data-tooltip attribute */
+                content: attr(data-tooltip);
                 position: absolute;
-                bottom: 100%; /* Position the bubble above the button */
+                bottom: 120%;
                 left: 50%;
                 transform: translateX(-50%);
-                background-color: rgba(217, 217, 217, 0.9);
+                background-color: black;
                 color: white;
                 padding: 5px 10px;
-                border-radius: 5px;
-                font-size: 14px;
-                white-space: nowrap;
-                opacity: 0;
-                visibility: hidden;
-                transition: opacity 0.2s ease-in-out, visibility 0.2s ease-in-out;
-                z-index: 1000;
+                border-radius: 6px;
+                opacity: 1; /* Force visible for testing */
             }
+            
+
+
         
-            button:hover::after {
-                opacity: 1;
-                visibility: visible;
-            }
+
             
             .ql-bold {
                 display: flex;
@@ -282,7 +283,7 @@
         pointer-events: none; 
         font-size: 24px;
         top: 0;
-        left: 4px;
+        left: 1px;
     }
     .editor-area .ql-editor:focus::before {
         content: ''; /* Hide placeholder when the editor is focused */
