@@ -27,6 +27,8 @@
 		"react-router-dom": "^6.27.0",
 		"react-typed": "^2.0.12",
 		"sass": "^1.79.5",
+		"simplebar": "^6.3.0",
+		"simplebar-react": "^3.3.0",
 		"typeface-hind": "^1.1.13",
 		"typeface-lora": "^1.1.13",
 		"typeface-montserrat": "^1.1.13",
