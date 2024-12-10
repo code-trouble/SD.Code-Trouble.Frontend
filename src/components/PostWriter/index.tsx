@@ -10,6 +10,7 @@ import toolbarLink from '../../assets/images/svg/toolbarLink.svg';
 import favoriteBadge from '../../assets/images/svg/blueFavorite.svg';
 import { Tag } from '../Tag';
 import CustomButton from '../CustomButton';
+import { TooltipDescription } from './TooltipDescription';
 
 export const PostWriter: React.FC = () => {
     const quillRef = useRef<HTMLDivElement>(null);
@@ -134,31 +135,48 @@ export const PostWriter: React.FC = () => {
             {/* Toolbar */}
             <div id="custom-toolbar" className="custom-toolbar">
                 <span className="ql-formats">
-                    <button className="ql-bold"></button>
-                    <button className="ql-italic"></button>
-                    <button className="ql-underline"></button>
-                    <button className="ql-strike"></button>
+                    <TooltipDescription text="Negrito">
+                        <button className="ql-bold"></button>
+                    </TooltipDescription>
+                    <TooltipDescription text="Itálico">
+                        <button className="ql-italic"></button>
+                    </TooltipDescription>
+                    <TooltipDescription text="Sublinhado">
+                        <button className="ql-underline"></button>
+                    </TooltipDescription>
+                    <TooltipDescription text="Riscado">
+                        <button className="ql-strike"></button>
+                    </TooltipDescription>
                 </span>
-
-                <span className='separator'></span>
-                
+                <span className="separator"></span>
                 <span className="ql-formats">
-                    <button className="ql-code-block"></button>
-                    <button className="ql-list" value="bullet"></button>
-                    <button className="ql-list" value="ordered"></button>
+                    <TooltipDescription text="Bloco de Código">
+                        <button className="ql-code-block"></button>
+                    </TooltipDescription>
+                    <TooltipDescription text="Lista com Marcadores">
+                        <button className="ql-list" value="bullet"></button>
+                    </TooltipDescription>
+                    <TooltipDescription text="Lista Numerada">
+                        <button className="ql-list" value="ordered"></button>
+                    </TooltipDescription>
                 </span>
-
-                <span className='separator'></span>
-
+                <span className="separator"></span>
                 <span className="ql-formats">
-                    <button className="ql-image"></button>
-                    <button className="ql-video"></button>
-                    <button className="ql-link"></button>
+                    <TooltipDescription text="Inserir Imagem">
+                        <button className="ql-image"></button>
+                    </TooltipDescription>
+                    <TooltipDescription text="Inserir Vídeo">
+                        <button className="ql-video"></button>
+                    </TooltipDescription>
+                    <TooltipDescription text="Inserir Link">
+                        <button className="ql-link"></button>
+                    </TooltipDescription>
                 </span>
             </div>
     
             {/* Parte branca (inclui inputs e editor) */}
             <form onSubmit={handleSubmit} className="editor-form">
+                
                 <div className="editor-container">
                     {/* Campo de título */}
                     <textarea
@@ -211,8 +229,9 @@ export const PostWriter: React.FC = () => {
     
                     {/* Área do editor */}
                     <div ref={quillRef} className="editor-area"></div>
+                            
                 </div>
-
+            
             </form>
         </div>
     );
