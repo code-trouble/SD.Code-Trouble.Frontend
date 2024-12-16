@@ -4,7 +4,7 @@
   flex-direction: column;
   font-family: $mainFont;
   height: 100vh;
-
+  overflow-x: hidden;
 
   .hero {
     display: flex;
