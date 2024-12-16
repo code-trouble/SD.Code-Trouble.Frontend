@@ -12,7 +12,42 @@ import { Tag } from '../Tag';
 import CustomButton from '../CustomButton';
 import { TooltipDescription } from './TooltipDescription';
 
+
+
+
+
+
 export const PostWriter: React.FC = () => {
+    const [toolbarTransform, setToolbarTransform] = useState('translateY(0)'); // Default position
+    const viewportHeightRef = useRef(window.innerHeight);
+
+    useEffect(() => {
+        const isMobileOrTablet = window.matchMedia('(max-width: 1200px)').matches;
+
+        if (!isMobileOrTablet) return; // Exit if not mobile or tablet
+
+        const handleResize = () => {
+            const currentHeight = window.innerHeight;
+
+            if (currentHeight < viewportHeightRef.current) {
+                // Keyboard is open
+                const keyboardHeight = viewportHeightRef.current - currentHeight;
+                setToolbarTransform(`translateY(-${keyboardHeight}px)`);
+            } else {
+                // Keyboard is closed
+                setToolbarTransform('translateY(0)');
+            }
+
+            viewportHeightRef.current = currentHeight; // Update reference
+        };
+
+        window.addEventListener('resize', handleResize);
+
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
+    
     const quillRef = useRef<HTMLDivElement>(null);
     const editorRef = useRef<Quill | null>(null);
 
@@ -38,28 +73,34 @@ export const PostWriter: React.FC = () => {
                 modules: {
                     toolbar: '#custom-toolbar',
                 },
-                placeholder: 'Escreva seu texto...',
+                placeholder: '',
             });
 
             const editor = quillRef.current.querySelector('.ql-editor');
-            if (editor) {
-                editor.setAttribute('data-placeholder', 'Escreva seu texto...');
-            }
 
-            editorRef.current.on('text-change', () => {
-                if (editorRef.current?.getText().trim().length === 0) {
+            const updatePlaceholder = () => {
+                const textLength = editorRef.current?.getText().trim().length;
+                if (textLength === 0) {
                     editor?.setAttribute('data-placeholder', 'Escreva seu texto...');
                 } else {
                     editor?.removeAttribute('data-placeholder');
                 }
+            };
+        
+            editorRef.current.on('text-change', updatePlaceholder);
+            editorRef.current.on('selection-change', (range) => {
+                if (range == null) {
+                    updatePlaceholder(); 
+                }
             });
-            
+    
+            updatePlaceholder();
+
             const icons = Quill.import('ui/icons') as Record<string, string>;
             Object.keys(icons).forEach((key) => {
                 icons[key] = ''; 
             });
 
-            
             const toolbarContainer = document.getElementById('custom-toolbar')!;
             toolbarContainer.querySelector('.ql-bold')!.innerHTML = 'Bold';
             toolbarContainer.querySelector('.ql-italic')!.innerHTML = 'Italic';
@@ -115,9 +156,7 @@ export const PostWriter: React.FC = () => {
 
     return (
         <div className="postWriter-container">
-                
             <div className="submitArea">
-
                 <div className='submitButtons'>
                     <button>
                         <img src={favoriteBadge} alt="favoritar"/>
@@ -132,8 +171,9 @@ export const PostWriter: React.FC = () => {
                     />
                 </div>
             </div>
-            {/* Toolbar */}
-            <div id="custom-toolbar" className="custom-toolbar">
+            <div id="custom-toolbar" className="custom-toolbar" 
+                style={{ transform: toolbarTransform }} 
+            >
                 <span className="ql-formats">
                     <TooltipDescription text="Negrito">
                         <button className="ql-bold"></button>
@@ -144,41 +184,38 @@ export const PostWriter: React.FC = () => {
                     <TooltipDescription text="Sublinhado">
                         <button className="ql-underline"></button>
                     </TooltipDescription>
-                    <TooltipDescription text="Riscado">
+                    <TooltipDescription text="Traçado">
                         <button className="ql-strike"></button>
                     </TooltipDescription>
                 </span>
                 <span className="separator"></span>
                 <span className="ql-formats">
-                    <TooltipDescription text="Bloco de Código">
+                    <TooltipDescription text="Adicionar código">
                         <button className="ql-code-block"></button>
                     </TooltipDescription>
-                    <TooltipDescription text="Lista com Marcadores">
+                    <TooltipDescription text="Adicionar lista">
                         <button className="ql-list" value="bullet"></button>
                     </TooltipDescription>
-                    <TooltipDescription text="Lista Numerada">
+                    <TooltipDescription text="Adicionar lista numérica">
                         <button className="ql-list" value="ordered"></button>
                     </TooltipDescription>
                 </span>
                 <span className="separator"></span>
                 <span className="ql-formats">
-                    <TooltipDescription text="Inserir Imagem">
+                    <TooltipDescription text="Adicionar imagem">
                         <button className="ql-image"></button>
                     </TooltipDescription>
-                    <TooltipDescription text="Inserir Vídeo">
+                    <TooltipDescription text="Adicionar bídeo">
                         <button className="ql-video"></button>
                     </TooltipDescription>
-                    <TooltipDescription text="Inserir Link">
+                    <TooltipDescription text="Adicionar link">
                         <button className="ql-link"></button>
                     </TooltipDescription>
                 </span>
             </div>
-    
-            {/* Parte branca (inclui inputs e editor) */}
             <form onSubmit={handleSubmit} className="editor-form">
-                
+
                 <div className="editor-container">
-                    {/* Campo de título */}
                     <textarea
                         placeholder="Título"
                         className="editor-title"
@@ -187,7 +224,6 @@ export const PostWriter: React.FC = () => {
                             e.currentTarget.style.height = `${e.currentTarget.scrollHeight}px`;
                         }}
                     />
-
                     <div className="editor-tags">
                         {selectedTags.length > 0 && (
                             <div className="tags-container">
@@ -224,14 +260,9 @@ export const PostWriter: React.FC = () => {
                             )}
                         </div>
                     </div>
-
-
-    
-                    {/* Área do editor */}
                     <div ref={quillRef} className="editor-area"></div>
-                            
                 </div>
-            
+
             </form>
         </div>
     );
