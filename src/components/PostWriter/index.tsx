@@ -15,39 +15,43 @@ import { TooltipDescription } from './TooltipDescription';
 
 
 
-
-
 export const PostWriter: React.FC = () => {
-    const [toolbarTransform, setToolbarTransform] = useState('translateY(0)'); // Default position
-    const viewportHeightRef = useRef(window.innerHeight);
+    
 
     useEffect(() => {
-        const isMobileOrTablet = window.matchMedia('(max-width: 1200px)').matches;
-
-        if (!isMobileOrTablet) return; // Exit if not mobile or tablet
-
-        const handleResize = () => {
-            const currentHeight = window.innerHeight;
-
-            if (currentHeight < viewportHeightRef.current) {
-                // Keyboard is open
-                const keyboardHeight = viewportHeightRef.current - currentHeight;
-                setToolbarTransform(`translateY(-${keyboardHeight}px)`);
+        const updateToolbarPosition = () => {
+            if (window.innerWidth <= 1000 && window.visualViewport) {
+                const keyboardHeight = window.innerHeight - window.visualViewport.height;
+    
+                if (keyboardHeight > 0) {
+                    // Keep the toolbar glued to the top of the keyboard
+                    const adjustedBottom = keyboardHeight - window.visualViewport.offsetTop;
+                    document.documentElement.style.setProperty('--toolbar-bottom', `${adjustedBottom}px`);
+                } else {
+                    // Reset when the keyboard is not visible
+                    document.documentElement.style.setProperty('--toolbar-bottom', '0px');
+                }
             } else {
-                // Keyboard is closed
-                setToolbarTransform('translateY(0)');
+                // Reset if viewport width is larger than 1000px
+                document.documentElement.style.setProperty('--toolbar-bottom', '0px');
             }
-
-            viewportHeightRef.current = currentHeight; // Update reference
         };
-
-        window.addEventListener('resize', handleResize);
-
+    
+        // Listen to both resize and scroll events
+        window.visualViewport?.addEventListener('resize', updateToolbarPosition);
+        window.visualViewport?.addEventListener('scroll', updateToolbarPosition);
+    
+        // Initial check to ensure position is set on load
+        updateToolbarPosition();
+    
         return () => {
-            window.removeEventListener('resize', handleResize);
+            window.visualViewport?.removeEventListener('resize', updateToolbarPosition);
+            window.visualViewport?.removeEventListener('scroll', updateToolbarPosition);
         };
     }, []);
     
+
+
     const quillRef = useRef<HTMLDivElement>(null);
     const editorRef = useRef<Quill | null>(null);
 
@@ -116,15 +120,41 @@ export const PostWriter: React.FC = () => {
             toolbarContainer.querySelector('.ql-video')!.innerHTML = `<img src="${toolbarVideo}" alt="Video" />`;
 
             const toggleFormats = (button: Element, format: string) => {
-                button.addEventListener('click', (e) => {
+                const handleClick = (e: Event) => {
                     e.preventDefault();
-                    const range = editorRef.current?.getSelection();
+            
+                    const editor = editorRef.current;
+                    if (!editor) return;
+            
+                    const range = editor.getSelection();
                     if (range) {
-                        const currentFormat = editorRef.current?.getFormat(range) || {};
-                        editorRef.current?.format(format, !currentFormat[format]);
+                        editor.format(format, !editor.getFormat(range)[format]);
+                    } else {
+                        editor.format(format, true); // Apply to cursor position
                     }
+                };
+            
+                // Desktop click
+                button.addEventListener('click', handleClick);
+            
+                // Mobile: Add active class on touchstart
+                button.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    (button as HTMLElement).classList.add('active');
+                    handleClick(e);
+                });
+            
+                button.addEventListener('touchend', () => {
+                    (button as HTMLElement).classList.remove('active');
+                });
+            
+                button.addEventListener('touchcancel', () => {
+                    (button as HTMLElement).classList.remove('active');
                 });
             };
+
+            
+            
 
             toggleFormats(toolbarContainer.querySelector('.ql-bold')!, 'bold');
             toggleFormats(toolbarContainer.querySelector('.ql-italic')!, 'italic');
@@ -133,6 +163,7 @@ export const PostWriter: React.FC = () => {
             toggleFormats(toolbarContainer.querySelector('.ql-code-block')!, 'code-block');
         }
     }, []);
+
 
     const handleAddTag = (tag: string) => {
         if (!selectedTags.includes(tag)) {
@@ -146,6 +177,42 @@ export const PostWriter: React.FC = () => {
     };
 
     const toggleDropdown = () => setDropdownOpen((prev) => !prev);
+    useEffect(() => {
+        const adjustDropdownPosition = () => {
+            const dropdown = document.querySelector('.tags-dropdown') as HTMLElement | null;
+            const container = dropdown?.parentElement as HTMLElement | null;
+    
+            if (!dropdown || !container) return;
+    
+            const dropdownRect = dropdown.getBoundingClientRect();
+            const viewportWidth = window.innerWidth;
+    
+            dropdown.style.left = '';
+            dropdown.style.right = '';
+    
+            if (dropdownRect.left < 0) {
+                dropdown.style.left = '0';
+                dropdown.style.right = 'auto';
+            }
+    
+            if (dropdownRect.right > viewportWidth) {
+                dropdown.style.right = '0';
+                dropdown.style.left = 'auto';
+            }
+        };
+    
+        if (dropdownOpen) {
+            adjustDropdownPosition();
+            window.addEventListener('resize', adjustDropdownPosition);
+        } else {
+            window.removeEventListener('resize', adjustDropdownPosition);
+        }
+    
+        return () => {
+            window.removeEventListener('resize', adjustDropdownPosition);
+        };
+    }, [dropdownOpen]);
+    
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -171,9 +238,7 @@ export const PostWriter: React.FC = () => {
                     />
                 </div>
             </div>
-            <div id="custom-toolbar" className="custom-toolbar" 
-                style={{ transform: toolbarTransform }} 
-            >
+            <div id="custom-toolbar" className="custom-toolbar">
                 <span className="ql-formats">
                     <TooltipDescription text="Negrito">
                         <button className="ql-bold"></button>
@@ -214,7 +279,6 @@ export const PostWriter: React.FC = () => {
                 </span>
             </div>
             <form onSubmit={handleSubmit} className="editor-form">
-
                 <div className="editor-container">
                     <textarea
                         placeholder="Título"
@@ -246,8 +310,12 @@ export const PostWriter: React.FC = () => {
                             {dropdownOpen && (
                                 <div className="tags-dropdown">
                                     {allTags
-                                        .filter((tag) => !selectedTags.includes(tag))
-                                        .map((tag, index) => (
+                                        .filter((tag) => !selectedTags.includes(tag)).length === 0 ? (
+                                            <span>There are no tags left.</span>
+                                        ) : 
+                                        allTags
+                                            .filter((tag) => !selectedTags.includes(tag))
+                                            .map((tag, index) => (
                                             <button
                                                 key={index}
                                                 className="dropdown-tag-item"
@@ -262,7 +330,6 @@ export const PostWriter: React.FC = () => {
                     </div>
                     <div ref={quillRef} className="editor-area"></div>
                 </div>
-
             </form>
         </div>
     );
