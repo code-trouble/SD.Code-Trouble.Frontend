@@ -8,7 +8,7 @@ export default function App() {
   return (
     <>
       <Routes>
-        <Route path="/" element={<ComingSoonPage />} />        {/* Página principal */}
+        <Route path="/" element={<TestingPage />} />        {/* Página principal */}
         <Route path="/coming-soon" element={<ComingSoonPage />} /> {/* Outra página */}
         <Route path="*" element={<ErrorPage />} />              {/* Página 404 */}
         <Route path="test" element={<TestingPage />} />              {/* Página 404 */}
