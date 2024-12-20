@@ -70,7 +70,7 @@
             button:hover {
                 cursor: pointer;
                 background-color: rgba(217, 217, 217, 0.1);
-                color: white;
+                
             }
 
             button::after {
@@ -213,14 +213,13 @@
             position: relative;
             width: fit-content;
             font-size: 16px;
-            font-weight: 800;
             font-family: $montserratFont;
             padding: 5px 0px;
             border: none;
             background: white;
             color: gray; 
             text-align: left; 
-            margin-left: 10px;
+            margin-left: 5px;
 
             cursor: pointer;
 
@@ -389,8 +388,12 @@
             z-index: 10;
             background-color: $onyx;
             padding: 0!important;
-            border-top-left-radius: 8px;
-            border-top-right-radius: 8px;
+            border-top-left-radius: 0px;
+            border-top-right-radius: 0px;
+            order: 2;
+            width: 100%;
+            height: auto;
+            justify-content: space-between;
             display: flex;
             align-items: center;
             
@@ -404,10 +407,15 @@
             .ql-formats {    
                 display: flex;
                 justify-content: space-around;
-                gap: 20px;
+                gap: 10px;
+                padding: 0px 10px;
+
+                button {
+                    height: 58px;
+                }
                 .ql-bold {
                     width: fit-content;
-                    padding-left: 15px;
+                
                 }
     
                 .ql-italic {
@@ -444,54 +452,9 @@
 }
 
 
-
-@media (max-width: 1000px) {
-
-
+@media (max-width: 800px) {
     .postWriter-container {
-        
-
-
         .ql-toolbar {
-            border-top-left-radius: 0px;
-            border-top-right-radius: 0px;
-            order: 2;
-            width: 100%;
-            display: flex;
-
-            align-items: center;
-            height: auto;
-            justify-content: space-between;
-            
-
-            .ql-formats {    
-                display: flex;
-                justify-content: space-around;
-                gap: 10px;
-
-                button {
-                    height: 58px;
-                }
-            }
-        }
-    }
-}
-
-
-@media (max-width: 700px) {
-    .postWriter-container {
-
-        .ql-toolbar {
-            border-top-left-radius: 0px;
-            border-top-right-radius: 0px;
-            order: 2;
-            width: 100%;
-            display: flex;
-
-            align-items: center;
-            height: auto;
-            justify-content: space-between;
-
             .separator {
                 margin-left: 10px;
                 margin-right: 10px;
@@ -511,7 +474,7 @@
 }
 
 
-@media (max-width: 550px) {
+@media (max-width: 730px) {
     .postWriter-container {
 
         .ql-toolbar {
@@ -563,7 +526,7 @@
 }
 
 
-@media (max-width: 498px) {
+@media (max-width: 536px) {
 
     .postWriter-container {
 
@@ -578,7 +541,11 @@
                 display: flex;
                 justify-content: space-around;
                 gap: 2px;
-                
+    
+                .ql-bold {
+                    width: fit-content;
+                    
+                }
 
 
                 img {
@@ -606,20 +573,22 @@
 }
 
 
-@media (max-width: 390px) {
+@media (max-width: 430px) {
 
     .postWriter-container {
 
         .ql-toolbar {
-
+            justify-content: space-between;
+        
             .ql-formats {    
                 display: flex;
-                justify-content: space-around;
-                gap: 2px;
-                
+                justify-content: center;
+                gap: 0px;
+                padding: 0px;
+
                 .ql-bold {
                     width: fit-content;
-                    padding-left: 5px;
+                    padding-left: 13px;
                 }
     
                 img {
@@ -629,7 +598,7 @@
 
                 button {
                     font-size: 11px;
-                    flex-wrap: wrap;
+                    
                 }
 
                 .ql-list[value="bullet"],
@@ -653,7 +622,9 @@
     .postWriter-container {
 
         .ql-toolbar {
-
+            justify-content:center;
+            flex-wrap: wrap;
+            
             .ql-formats {    
                 display: flex;
                 justify-content: space-around;
@@ -671,7 +642,7 @@
 
                 button {
                     font-size: 11px;
-                    flex-wrap: wrap;
+                    height: 40px;
                 }
 
                 .ql-list[value="bullet"],
