@@ -12,45 +12,30 @@ import { Tag } from '../Tag';
 import CustomButton from '../CustomButton';
 import { TooltipDescription } from './TooltipDescription';
 
-
-
-
 export const PostWriter: React.FC = () => {
-    
-
     useEffect(() => {
         const updateToolbarPosition = () => {
             if (window.innerWidth <= 1000 && window.visualViewport) {
                 const keyboardHeight = window.innerHeight - window.visualViewport.height;
-    
                 if (keyboardHeight > 0) {
-                    // Keep the toolbar glued to the top of the keyboard
                     const adjustedBottom = keyboardHeight - window.visualViewport.offsetTop;
                     document.documentElement.style.setProperty('--toolbar-bottom', `${adjustedBottom}px`);
                 } else {
-                    // Reset when the keyboard is not visible
                     document.documentElement.style.setProperty('--toolbar-bottom', '0px');
                 }
             } else {
-                // Reset if viewport width is larger than 1000px
                 document.documentElement.style.setProperty('--toolbar-bottom', '0px');
             }
         };
-    
-        // Listen to both resize and scroll events
-        window.visualViewport?.addEventListener('resize', updateToolbarPosition);
-        window.visualViewport?.addEventListener('scroll', updateToolbarPosition);
-    
-        // Initial check to ensure position is set on load
+        const onViewportChange = () => updateToolbarPosition();
+        window.visualViewport?.addEventListener('resize', onViewportChange);
+        window.visualViewport?.addEventListener('scroll', onViewportChange);
         updateToolbarPosition();
-    
         return () => {
-            window.visualViewport?.removeEventListener('resize', updateToolbarPosition);
-            window.visualViewport?.removeEventListener('scroll', updateToolbarPosition);
+            window.visualViewport?.removeEventListener('resize', onViewportChange);
+            window.visualViewport?.removeEventListener('scroll', onViewportChange);
         };
     }, []);
-    
-
 
     const quillRef = useRef<HTMLDivElement>(null);
     const editorRef = useRef<Quill | null>(null);
@@ -66,7 +51,7 @@ export const PostWriter: React.FC = () => {
         "Corinthians",
         "Libertadores",
         "CDB"
-    ];    
+    ];
     const [selectedTags, setSelectedTags] = useState<string[]>([]);
     const [dropdownOpen, setDropdownOpen] = useState(false);
 
@@ -75,14 +60,52 @@ export const PostWriter: React.FC = () => {
             editorRef.current = new Quill(quillRef.current, {
                 theme: 'snow',
                 modules: {
-                    toolbar: '#custom-toolbar',
+                    toolbar: {
+                        container: '#custom-toolbar',
+                        handlers: {
+                            'bold': function(this: { quill: Quill }) {
+                                const range = this.quill.getSelection();
+                                if (range) {
+                                    const format = this.quill.getFormat(range);
+                                    this.quill.format('bold', !format.bold);
+                                }
+                            },
+                            'italic': function(this: { quill: Quill }) {
+                                const range = this.quill.getSelection();
+                                if (range) {
+                                    const format = this.quill.getFormat(range);
+                                    this.quill.format('italic', !format.italic);
+                                }
+                            },
+                            'underline': function(this: { quill: Quill }) {
+                                const range = this.quill.getSelection();
+                                if (range) {
+                                    const format = this.quill.getFormat(range);
+                                    this.quill.format('underline', !format.underline);
+                                }
+                            },
+                            'strike': function(this: { quill: Quill }) {
+                                const range = this.quill.getSelection();
+                                if (range) {
+                                    const format = this.quill.getFormat(range);
+                                    this.quill.format('strike', !format.strike);
+                                }
+                            },
+                            'code-block': function(this: { quill: Quill }) {
+                                const range = this.quill.getSelection();
+                                if (range) {
+                                    const format = this.quill.getFormat(range);
+                                    this.quill.format('code-block', !format['code-block']);
+                                }
+                            }
+                        }
+                    }
                 },
                 placeholder: '',
-            });
-
-            const editor = quillRef.current.querySelector('.ql-editor');
-
+            });  
+                        
             const updatePlaceholder = () => {
+                const editor = quillRef.current?.querySelector('.ql-editor');
                 const textLength = editorRef.current?.getText().trim().length;
                 if (textLength === 0) {
                     editor?.setAttribute('data-placeholder', 'Escreva seu texto...');
@@ -90,86 +113,46 @@ export const PostWriter: React.FC = () => {
                     editor?.removeAttribute('data-placeholder');
                 }
             };
-        
+    
             editorRef.current.on('text-change', updatePlaceholder);
             editorRef.current.on('selection-change', (range) => {
                 if (range == null) {
-                    updatePlaceholder(); 
+                    updatePlaceholder();
                 }
             });
-    
             updatePlaceholder();
-
-            const icons = Quill.import('ui/icons') as Record<string, string>;
-            Object.keys(icons).forEach((key) => {
-                icons[key] = ''; 
-            });
-
-            const toolbarContainer = document.getElementById('custom-toolbar')!;
-            toolbarContainer.querySelector('.ql-bold')!.innerHTML = 'Bold';
-            toolbarContainer.querySelector('.ql-italic')!.innerHTML = 'Italic';
-            toolbarContainer.querySelector('.ql-underline')!.innerHTML = 'Underline';
-            toolbarContainer.querySelector('.ql-strike')!.innerHTML = 'Strike';
-
-            toolbarContainer.querySelector('.ql-list[value="bullet"]')!.innerHTML = `<img src="${toolbarList}" alt="Bullet List" />`;
-            toolbarContainer.querySelector('.ql-list[value="ordered"]')!.innerHTML = `<img src="${toolbarOrdered}" alt="Ordered List" />`;
-            toolbarContainer.querySelector('.ql-code-block')!.innerHTML = `<img src="${codespace}" alt="Code Block" />`;
-
-            toolbarContainer.querySelector('.ql-link')!.innerHTML = `<img src="${toolbarLink}" alt="Link" />`;
-            toolbarContainer.querySelector('.ql-image')!.innerHTML = `<img src="${toolbarImg}" alt="Image" />`;
-            toolbarContainer.querySelector('.ql-video')!.innerHTML = `<img src="${toolbarVideo}" alt="Video" />`;
-
-            const toggleFormats = (button: Element, format: string) => {
-                const handleClick = (e: Event) => {
-                    e.preventDefault();
-            
-                    const editor = editorRef.current;
-                    if (!editor) return;
-            
-                    const range = editor.getSelection();
-                    if (range) {
-                        editor.format(format, !editor.getFormat(range)[format]);
-                    } else {
-                        editor.format(format, true); // Apply to cursor position
+    
+            // Customize toolbar icons
+            setTimeout(() => {
+                const toolbarContainer = document.getElementById('custom-toolbar')!;
+    
+                const replaceIcon = (selector: string, newIcon: string) => {
+                    const button = toolbarContainer.querySelector(selector);
+                    if (button) {
+                        button.innerHTML = newIcon;
                     }
                 };
-            
-                // Desktop click
-                button.addEventListener('click', handleClick);
-            
-                // Mobile: Add active class on touchstart
-                button.addEventListener('touchstart', (e) => {
-                    e.preventDefault();
-                    (button as HTMLElement).classList.add('active');
-                    handleClick(e);
-                });
-            
-                button.addEventListener('touchend', () => {
-                    (button as HTMLElement).classList.remove('active');
-                });
-            
-                button.addEventListener('touchcancel', () => {
-                    (button as HTMLElement).classList.remove('active');
-                });
-            };
-
-            
-            
-
-            toggleFormats(toolbarContainer.querySelector('.ql-bold')!, 'bold');
-            toggleFormats(toolbarContainer.querySelector('.ql-italic')!, 'italic');
-            toggleFormats(toolbarContainer.querySelector('.ql-underline')!, 'underline');
-            toggleFormats(toolbarContainer.querySelector('.ql-strike')!, 'strike');
-            toggleFormats(toolbarContainer.querySelector('.ql-code-block')!, 'code-block');
+    
+                replaceIcon('.ql-bold', 'Bold');
+                replaceIcon('.ql-italic', 'Italic');
+                replaceIcon('.ql-underline', 'Underline');
+                replaceIcon('.ql-strike', 'Strike');
+                replaceIcon('.ql-list[value="bullet"]', `<img src="${toolbarList}" alt="Bullet List" />`);
+                replaceIcon('.ql-list[value="ordered"]', `<img src="${toolbarOrdered}" alt="Ordered List" />`);
+                replaceIcon('.ql-code-block', `<img src="${codespace}" alt="Code Block" />`);
+                replaceIcon('.ql-link', `<img src="${toolbarLink}" alt="Link" />`);
+                replaceIcon('.ql-image', `<img src="${toolbarImg}" alt="Image" />`);
+                replaceIcon('.ql-video', `<img src="${toolbarVideo}" alt="Video" />`);
+            }, 0);
         }
     }, []);
-
+    
 
     const handleAddTag = (tag: string) => {
         if (!selectedTags.includes(tag)) {
-            setSelectedTags([tag, ...selectedTags]); 
+            setSelectedTags([tag, ...selectedTags]);
         }
-        setDropdownOpen(false); 
+        setDropdownOpen(false);
     };
 
     const handleRemoveTag = (tag: string) => {
@@ -177,42 +160,36 @@ export const PostWriter: React.FC = () => {
     };
 
     const toggleDropdown = () => setDropdownOpen((prev) => !prev);
+
+
     useEffect(() => {
         const adjustDropdownPosition = () => {
             const dropdown = document.querySelector('.tags-dropdown') as HTMLElement | null;
             const container = dropdown?.parentElement as HTMLElement | null;
-    
             if (!dropdown || !container) return;
-    
             const dropdownRect = dropdown.getBoundingClientRect();
             const viewportWidth = window.innerWidth;
-    
             dropdown.style.left = '';
             dropdown.style.right = '';
-    
             if (dropdownRect.left < 0) {
                 dropdown.style.left = '0';
                 dropdown.style.right = 'auto';
             }
-    
             if (dropdownRect.right > viewportWidth) {
                 dropdown.style.right = '0';
                 dropdown.style.left = 'auto';
             }
         };
-    
         if (dropdownOpen) {
             adjustDropdownPosition();
             window.addEventListener('resize', adjustDropdownPosition);
         } else {
             window.removeEventListener('resize', adjustDropdownPosition);
         }
-    
         return () => {
             window.removeEventListener('resize', adjustDropdownPosition);
         };
     }, [dropdownOpen]);
-    
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -240,44 +217,85 @@ export const PostWriter: React.FC = () => {
             </div>
             <div id="custom-toolbar" className="custom-toolbar">
                 <span className="ql-formats">
-                    <TooltipDescription text="Negrito">
+                    {window.innerWidth > 1200 ? (
+                        <TooltipDescription text="Negrito">
+                            <button className="ql-bold"></button>
+                        </TooltipDescription>
+                    ) : (
                         <button className="ql-bold"></button>
-                    </TooltipDescription>
-                    <TooltipDescription text="Itálico">
+                    )}
+                    {window.innerWidth > 1200 ? (
+                        <TooltipDescription text="Itálico">
+                            <button className="ql-italic"></button>
+                        </TooltipDescription>
+                    ) : (
                         <button className="ql-italic"></button>
-                    </TooltipDescription>
-                    <TooltipDescription text="Sublinhado">
+                    )}
+                    {window.innerWidth > 1200 ? (
+                        <TooltipDescription text="Sublinhado">
+                            <button className="ql-underline"></button>
+                        </TooltipDescription>
+                    ) : (
                         <button className="ql-underline"></button>
-                    </TooltipDescription>
-                    <TooltipDescription text="Traçado">
+                    )}
+                    {window.innerWidth > 1200 ? (
+                        <TooltipDescription text="Traçado">
+                            <button className="ql-strike"></button>
+                        </TooltipDescription>
+                    ) : (
                         <button className="ql-strike"></button>
-                    </TooltipDescription>
+                    )}
                 </span>
                 <span className="separator"></span>
                 <span className="ql-formats">
-                    <TooltipDescription text="Adicionar código">
+                    {window.innerWidth > 1200 ? (
+                        <TooltipDescription text="Adicionar código">
+                            <button className="ql-code-block"></button>
+                        </TooltipDescription>
+                    ) : (
                         <button className="ql-code-block"></button>
-                    </TooltipDescription>
-                    <TooltipDescription text="Adicionar lista">
+                    )}
+                    {window.innerWidth > 1200 ? (
+                        <TooltipDescription text="Adicionar lista">
+                            <button className="ql-list" value="bullet"></button>
+                        </TooltipDescription>
+                    ) : (
                         <button className="ql-list" value="bullet"></button>
-                    </TooltipDescription>
-                    <TooltipDescription text="Adicionar lista numérica">
+                    )}
+                    {window.innerWidth > 1200 ? (
+                        <TooltipDescription text="Adicionar lista numérica">
+                            <button className="ql-list" value="ordered"></button>
+                        </TooltipDescription>
+                    ) : (
                         <button className="ql-list" value="ordered"></button>
-                    </TooltipDescription>
+                    )}
                 </span>
                 <span className="separator"></span>
-                <span className="ql-formats">
-                    <TooltipDescription text="Adicionar imagem">
+                <span className="ql-formats last-ql-format">
+                    {window.innerWidth > 1200 ? (
+                        <TooltipDescription text="Adicionar imagem">
+                            <button className="ql-image"></button>
+                        </TooltipDescription>
+                    ) : (
                         <button className="ql-image"></button>
-                    </TooltipDescription>
-                    <TooltipDescription text="Adicionar bídeo">
+                    )}
+                    {window.innerWidth > 1200 ? (
+                        <TooltipDescription text="Adicionar bídeo">
+                            <button className="ql-video"></button>
+                        </TooltipDescription>
+                    ) : (
                         <button className="ql-video"></button>
-                    </TooltipDescription>
-                    <TooltipDescription text="Adicionar link">
+                    )}
+                    {window.innerWidth > 1200 ? (
+                        <TooltipDescription text="Adicionar link">
+                            <button className="ql-link"></button>
+                        </TooltipDescription>
+                    ) : (
                         <button className="ql-link"></button>
-                    </TooltipDescription>
+                    )}
                 </span>
             </div>
+
             <form onSubmit={handleSubmit} className="editor-form">
                 <div className="editor-container">
                     <textarea
