@@ -1,5 +1,6 @@
-@import './base/reset';
 @import './base/variables';
+@import './base/reset';
+
 @import './components/OldLanding/oldNavBar';
 @import './components/OldLanding/pageStyles';
 @import './components/OldLanding/textButton';
@@ -12,14 +13,15 @@
 @import './components/AuthModal/authForm';
 @import './components/ToggleButton/toggleButton';
 @import './components/CustomButton/customButton';
+@import './components/PostWriter/postWriter';
 @import './pages/LandingPage/landingPage';
 @import './components/Footer/footer';
-
+@import './components/TooltipDesciption/tooltipDescription';
 
 @font-face {
-  font-family: 'MS Sans Serif';
-  src: url('../../assets/fonts/ms_sans_serif.woff2') format('woff2');
-  font-weight: normal;
-  font-style: normal;
+    font-family: 'MS Sans Serif';
+    src: url('../../assets/fonts/ms_sans_serif.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
 }
 
