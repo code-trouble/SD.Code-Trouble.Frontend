@@ -1,0 +1,660 @@
+.postWriter-container {
+    width: 67em;
+    margin: 80px auto 0px auto;
+    position: relative;
+    transition: transform 0.2s ease-out;
+    
+    .submitArea {
+        display: flex;
+        justify-content: flex-end!important;
+
+        .submitButtons {
+            display: flex;
+            gap: 25px;
+            margin-bottom: 13px;
+        }
+    }
+    
+    .ql-toolbar.ql-snow {
+        border: none!important;
+    }
+
+    .ql-toolbar.ql-snow .ql-formats {
+        margin-right: 0px;
+    }
+    .ql-formats button::after {
+        content: none !important; 
+    }
+    
+
+    
+    .separator {
+        display: inline-block;
+        height: 26px;
+        width: 1px;
+        background-color: #808080;
+        margin-left: 20px;
+        margin-right: 20px;
+        border-left: 1px solid transparent;
+    }
+
+    .ql-toolbar {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background-color: $onyx;
+        padding: 0!important;
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+        display: flex;
+        align-items: center;
+        
+
+        .ql-formats {
+            display: flex;
+            justify-content: center;
+
+            
+            button {
+                display: flex;
+                align-items: center;
+                color: white;
+                font-size: 20px;
+                cursor: pointer;
+                background: none;
+                border: none;
+                position: relative;
+                font-family: $montserratFont;
+                height: 64px;
+            }
+            button:hover {
+                cursor: pointer;
+                background-color: rgba(217, 217, 217, 0.1);
+                
+            }
+
+            button::after {
+                content: attr(data-tooltip);
+                position: absolute;
+                bottom: 120%;
+                left: 50%;
+                transform: translateX(-50%);
+                background-color: black;
+                color: white;
+                padding: 5px 10px;
+                border-radius: 6px;
+                opacity: 1; /* Force visible for testing */
+            }
+            
+            button.active {
+                background-color: rgba(217, 217, 217, 0.1);
+                color: white;
+            }
+            
+
+        
+
+            
+            .ql-bold {
+                display: flex;
+                justify-content: center;
+                width: 100px;
+                font-weight: bold;
+                
+            }
+
+            .ql-italic {
+                display: flex;
+                justify-content: center;
+                width: 100px;
+                font-family: $loraItalicFont;
+                font-style: italic;
+                font-weight: 600
+            }
+
+            .ql-underline {
+                display: flex;
+                justify-content: center;
+                width: 128px;
+                text-decoration: underline;
+                font-weight: 600;
+            }
+
+            .ql-strike {
+                display: flex;
+                justify-content: center;
+                width: 128px;
+                text-decoration: line-through;
+                font-weight: 600;
+            }
+        }
+
+        .ql-image,
+        .ql-video,
+        .ql-link {
+            display: flex;
+            justify-content: center;
+            width: 75px;
+
+            img {
+                width: 20px;
+                height: 20px;
+            }
+        }
+
+        .ql-code-block {
+            display: flex;
+            justify-content: center;
+            width: 102px;
+
+            img {
+                width: 32px;
+                height: 24px;
+            }
+        }
+
+        
+        .ql-list[value="bullet"],
+        .ql-list[value="ordered"] {
+            display: flex;
+            justify-content: center;
+            width: 102px;
+
+            img {
+                width: 30px;
+                height: 20px;
+            }
+        }
+
+    }
+
+    .editor-container {
+        border: 1px solid #ccc;
+        border-bottom-left-radius: 8px;
+        border-bottom-right-radius: 8px;
+        padding: 50px 35px;
+        background-color: white;
+        margin-bottom: 80px;
+        overflow-y: auto;
+        max-height: 900px;
+    }
+
+    .editor-form {
+        display: flex;
+        flex-direction: column;
+        position: relative;
+
+    }
+    
+    .editor-title {
+        width: 100%;
+        height: 59px;
+        font-size: 40px;
+        font-family: $montserratFont;
+        color: $onyx;
+        font-weight: 600;
+        border: none;
+        line-height: 1.5;
+        overflow: hidden;
+        resize: none;
+    }
+    
+    .editor-title:focus {
+        outline: none;
+    }
+
+    .editor-tags {
+        .tags-button-wrapper {
+            position: relative;
+        }
+    
+
+        .tags-button {
+            position: relative;
+            width: fit-content;
+            font-size: 16px;
+            font-family: $montserratFont;
+            padding: 5px 0px;
+            border: none;
+            background: white;
+            color: gray; 
+            text-align: left; 
+            margin-left: 5px;
+
+            cursor: pointer;
+
+            :hover {
+                color: black;
+            }
+
+            :focus {
+                outline: none;
+            }
+            
+            
+        }
+
+    }
+
+    .editor-area {
+        min-height: 300px;
+        height: auto;
+        background-color: white;
+        border: none!important;
+        border-radius: 5px;
+        font-size: 18px;
+        font-family: $hindFont;
+        overflow: auto;
+    }   
+
+    .ql-editor {
+        padding: 0px;
+        overflow: hidden;
+    }
+
+    .editor-area .ql-editor::before {
+        content: attr(data-placeholder);
+        color: gray; 
+        font-family: $montserratFont;
+        position: absolute;
+        font-style: normal;
+        pointer-events: none; 
+        font-size: 24px;
+        top: 0;
+        left: 1px;
+    }
+    .editor-area .ql-editor:focus::before {
+        content: ''; /* Hide placeholder when the editor is focused */
+    }
+    
+
+    .editor-tags {
+        position: relative;
+        display: flex;
+        align-items: center;
+        border-top: 1px solid #ccc;
+        border-bottom: 1px solid #ccc;
+        padding: 5px 0px;
+        margin-bottom: 15px;
+        background-color: white;
+        overflow: visible;
+        white-space: nowrap;
+        z-index: 1;
+    }
+    
+
+    
+
+    .tags-dropdown {
+        position: absolute;
+        top: calc(100% + 20px);
+        background: white;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 10px;
+        z-index: 9999;
+        min-width: 150px;
+        max-height: 200px;
+        overflow-y: auto;
+        transform-origin: top right; 
+    }
+    
+    
+    .dropdown-tag-item {
+        display: block;
+        padding: 8px 12px;
+        background: #f9f9f9;
+        border: none;
+        text-align: left;
+        width: 100%;
+        cursor: pointer;
+        font-family: "Montserrat", sans-serif;
+        font-size: 14px;
+        color: #333;
+        border-radius: 4px;
+        transition: background-color 0.2s ease;
+        margin-bottom: 5px;
+    }
+    
+    .dropdown-tag-item:hover {
+        background-color: #eaeaea;
+    }
+    
+    .tags-container {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 0px;
+    }
+
+    .tag-list {
+        width: 100%;
+        flex-wrap: wrap;
+    }
+    
+    .tag-item {
+        display: flex;
+        align-items: center;
+        padding: 6px 14px;
+    }
+
+    .tag-item button {
+        background: none;
+        border: none;
+        color: red;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+    
+    
+    
+}
+
+
+@media (max-width: 1000px) {
+    .postWriter-container {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+
+
+
+        .submitArea {
+            order: -1;
+            padding: 0px 20px;  
+            width: 100%;
+            display: flex;
+            width: 100%;
+
+            .submitButtons {
+                width: 100%;
+                justify-content: space-between;
+                gap: 0;
+                
+            }
+        }
+
+        .editor-container {
+            order: -1;
+            border: none;
+            padding: 30px 20px;
+        }
+        .ql-toolbar {
+            position: fixed;
+            top: unset;
+            bottom: var(--toolbar-bottom, 0);
+            z-index: 10;
+            background-color: $onyx;
+            padding: 0!important;
+            border-top-left-radius: 0px;
+            border-top-right-radius: 0px;
+            order: 2;
+            width: 100%;
+            height: auto;
+            justify-content: space-between;
+            display: flex;
+            align-items: center;
+            
+            button {
+                pointer-events: auto;
+                touch-action: manipulation;
+            }
+
+            
+
+            .ql-formats {    
+                display: flex;
+                justify-content: space-around;
+                gap: 10px;
+                padding: 0px 10px;
+
+                button {
+                    height: 58px;
+                }
+                .ql-bold {
+                    width: fit-content;
+                
+                }
+    
+                .ql-italic {
+                    width: fit-content;
+                }
+    
+                .ql-underline {
+                    width: fit-content;
+                }
+    
+                .ql-strike {
+                    width: fit-content;
+                }
+            }
+    
+            .ql-image,
+            .ql-video,
+            .ql-link {
+                width: fit-content;
+            }
+    
+            .ql-code-block {
+                width: fit-content;
+            }
+    
+            
+            .ql-list[value="bullet"],
+            .ql-list[value="ordered"] {
+                width: fit-content;
+            }
+    
+        }
+    }
+}
+
+
+@media (max-width: 800px) {
+    .postWriter-container {
+        .ql-toolbar {
+            .separator {
+                margin-left: 10px;
+                margin-right: 10px;
+            }
+            .ql-formats {    
+                display: flex;
+                justify-content: space-around;
+                gap: 5px;
+
+                button {
+                    font-size: 14px;
+                }
+
+            }
+        }
+    }
+}
+
+
+@media (max-width: 730px) {
+    .postWriter-container {
+
+        .ql-toolbar {
+            border-top-left-radius: 0px;
+            border-top-right-radius: 0px;
+            order: 2;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            height: auto;
+            justify-content: space-between;
+
+
+            .separator {
+                margin-left: 10px;
+                margin-right: 10px;
+                
+            }
+
+            
+
+            .ql-formats {    
+                display: flex;
+                justify-content: space-around;
+                gap: 5px;
+
+                img {
+                    width: 20px;
+                    height: 15px;
+                }
+
+                button {
+                    font-size: 14px;
+                    flex-wrap: wrap;
+                }
+
+                .ql-list[value="bullet"],
+                .ql-list[value="ordered"] {
+                    img {
+                        width: 18px;
+                        height: 13px;
+                    }
+                }
+
+                
+            }
+        }
+    }
+}
+
+
+@media (max-width: 536px) {
+
+    .postWriter-container {
+
+        .ql-toolbar {
+
+            .separator {
+                margin-left: 5px;
+                margin-right: 5px;
+            }
+            
+            .ql-formats {    
+                display: flex;
+                justify-content: space-around;
+                gap: 2px;
+    
+                .ql-bold {
+                    width: fit-content;
+                    
+                }
+
+
+                img {
+                    width: 15px;
+                    height: 11px;
+                }
+
+                button {
+                    font-size: 11px;
+                    flex-wrap: wrap;
+                }
+
+                .ql-list[value="bullet"],
+                .ql-list[value="ordered"] {
+                    img {
+                        width: 18px;
+                        height: 13px;
+                    }
+                }
+
+                
+            }
+        }
+    }
+}
+
+
+@media (max-width: 430px) {
+
+    .postWriter-container {
+
+        .ql-toolbar {
+            justify-content: space-between;
+        
+            .ql-formats {    
+                display: flex;
+                justify-content: center;
+                gap: 0px;
+                padding: 0px;
+
+                .ql-bold {
+                    width: fit-content;
+                    padding-left: 13px;
+                }
+    
+                img {
+                    width: 15px;
+                    height: 11px;
+                }
+
+                button {
+                    font-size: 11px;
+                    
+                }
+
+                .ql-list[value="bullet"],
+                .ql-list[value="ordered"] {
+                    img {
+                        width: 18px;
+                        height: 13px;
+                    }
+                }
+
+                
+            }
+        }
+    }
+}
+
+
+
+@media (max-width: 360px) {
+
+    .postWriter-container {
+
+        .ql-toolbar {
+            justify-content:center;
+            flex-wrap: wrap;
+            
+            .ql-formats {    
+                display: flex;
+                justify-content: space-around;
+                gap: 0px;
+                
+                .ql-bold {
+                    width: fit-content;
+                    padding-left: 5px;
+                }
+    
+                img {
+                    width: 15px;
+                    height: 11px;
+                }
+
+                button {
+                    font-size: 11px;
+                    height: 40px;
+                }
+
+                .ql-list[value="bullet"],
+                .ql-list[value="ordered"] {
+                    img {
+                        width: 18px;
+                        height: 13px;
+                    }
+                }
+
+                
+            }
+        }
+    }
+}
