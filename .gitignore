@@ -1,4 +1,3 @@
-# Logs
 logs
 *.log
 npm-debug.log*
@@ -15,7 +14,6 @@ dist
 dist-ssr
 *.local
 
-# Editor directories and files
 .vscode/*
 !.vscode/extensions.json
 .idea
@@ -28,7 +26,6 @@ dist-ssr
 
 .env
 
-# Yarn (padrão oficial para nodeLinker: node-modules)
 .pnp.*
 .yarn/*
 !.yarn/patches
@@ -37,8 +34,6 @@ dist-ssr
 !.yarn/sdks
 !.yarn/versions
 
-# Claude Code (arquivos locais/pessoais do assistente)
 .claude/
 
-# Tests
 coverage
