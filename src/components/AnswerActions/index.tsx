@@ -2,11 +2,13 @@ import React, { useState } from "react";
 import threeDotMenu from "../../assets/images/svg/3dotsMenu.svg";
 
 interface AnswerActionsProps {
+  canEdit?: boolean;
   onEdit: () => void;
   onDelete: () => void;
 }
 
 export const AnswerActions: React.FC<AnswerActionsProps> = ({
+  canEdit = true,
   onEdit,
   onDelete,
 }) => {
@@ -22,15 +24,17 @@ export const AnswerActions: React.FC<AnswerActionsProps> = ({
       />
       {showMenu && (
         <div className="answer-actions-menu">
-          <button
-            onClick={() => {
-              onEdit();
-              setShowMenu(false);
-            }}
-            className="answer-action-button edit"
-          >
-            Editar
-          </button>
+          {canEdit && (
+            <button
+              onClick={() => {
+                onEdit();
+                setShowMenu(false);
+              }}
+              className="answer-action-button edit"
+            >
+              Editar
+            </button>
+          )}
           <button
             onClick={() => {
               onDelete();

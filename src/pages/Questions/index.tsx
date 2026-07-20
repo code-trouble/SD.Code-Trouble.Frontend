@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import CustomButton from "../../components/CustomButton";
 import { QuestionsPreview } from "../../components/QuestionPreview";
@@ -7,8 +7,8 @@ import { QuestionsFilterModal } from "../../components/QuestionsFilterModal";
 import { Pagination } from "../../components/QuestionsPagination";
 import { QuestionsSkeleton } from "../../skeletons/QuestionsPageSkeleton";
 import { TagSearcher } from "../../components/TagSearcher";
-import { useTagStore } from "../../stores/tagStore";
-import { usePostStore } from "../../stores/postStore";
+import { usePosts } from "../../queries/posts";
+import { useTags } from "../../queries/tags";
 
 export const Questions: React.FC = () => {
   const navigate = useNavigate();
@@ -16,17 +16,25 @@ export const Questions: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [showAllTopics, setShowAllTopics] = useState(false);
-  const {
-    questionsList: questions,
-    isLoadingPosts,
-    error,
-    fetchAllPosts,
-  } = usePostStore();
-  const { tags } = useTagStore();
+  const itemsPerPage = 8;
 
-  useEffect(() => {
-    fetchAllPosts({ kind: "question" });
-  }, [fetchAllPosts]);
+  const { data: tags = [] } = useTags();
+
+  // Pagination AND tag filtering now happen on the server — we no longer
+  // download every question just to slice/filter it in the browser.
+  const {
+    data: questionsPage,
+    isLoading: isLoadingPosts,
+    error,
+  } = usePosts({
+    kind: "question",
+    page: currentPage,
+    limit: itemsPerPage,
+    tags: selectedTags.length ? selectedTags : undefined,
+  });
+
+  const displayedQuestions = questionsPage?.data ?? [];
+  const totalPages = questionsPage?.pagination?.totalPages ?? 1;
 
   const TOPICS_LIMIT = 5;
   const displayedTags = showAllTopics
@@ -34,29 +42,13 @@ export const Questions: React.FC = () => {
     : tags.slice(0, TOPICS_LIMIT).map((tag) => tag.name);
   const toggleTopics = () => setShowAllTopics((prev) => !prev);
 
-  const itemsPerPage = 8;
-  const totalPages = Math.ceil(questions.length / itemsPerPage);
-
-  const filteredQuestions =
-    selectedTags.length > 0
-      ? questions.filter((question) =>
-          selectedTags.every((tag) => question.body.tags.includes(tag)),
-        )
-      : questions;
-
-  const displayedQuestions = filteredQuestions.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage,
-  );
-
-  //  const clearAllTags = () => setSelectedTags([]);
-
   const navigateTo = (path: string) => {
     window.scrollTo(0, 0);
     navigate(path);
   };
 
   const handleTagClick = (tagName: string) => {
+    setCurrentPage(1); // a new filter starts from page 1
     setSelectedTags((prev) => {
       if (prev.includes(tagName)) {
         return prev.filter((tag) => tag !== tagName);
@@ -82,7 +74,7 @@ export const Questions: React.FC = () => {
           className="questions-inner-container"
           style={{ textAlign: "center", padding: "2rem", color: "red" }}
         >
-          {error}
+          {error.message}
         </div>
       </div>
     );
@@ -125,7 +117,7 @@ export const Questions: React.FC = () => {
               <a href="#">Mês</a>
             </div>
             <div className="questions-list">
-              {questions.length === 0 && isLoadingPosts ? (
+              {displayedQuestions.length === 0 ? (
                 <div style={{ textAlign: "center", padding: "2rem" }}>
                   Nenhuma pergunta encontrada.
                 </div>
@@ -144,7 +136,7 @@ export const Questions: React.FC = () => {
               )}
             </div>
           </div>
-          {questions.length > 0 && (
+          {totalPages > 1 && (
             <Pagination
               currentPage={currentPage}
               totalPages={totalPages}

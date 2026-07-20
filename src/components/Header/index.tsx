@@ -6,8 +6,15 @@ import { SearchBar } from "./searchbar";
 import { makeElementAccessible } from "../../utils/makeElementAccessible";
 import { useAuthStore } from "../../stores/authStore";
 import { toast } from "sonner";
-import { useUserStore } from "../../stores/userStore";
 import { useAuthModalStore } from "../../stores/authModalStore";
+import { useCurrentUser } from "../../queries/user";
+import {
+  useMarkAllNotificationsRead,
+  useMarkNotificationRead,
+  useNotifications,
+  useUnreadCount,
+} from "../../queries/notifications";
+import { NotificationsDropdown } from "../NotificationsDropdown";
 import {
   CodeLogo,
   CodeLogoBlue,
@@ -27,7 +34,7 @@ interface IHeader {
 }
 
 export const Header: React.FC<IHeader> = ({ theme }) => {
-  const currentUser = useUserStore((state) => state.currentUser);
+  const currentUser = useCurrentUser();
   const loggedIn = !!currentUser;
 
   const { logout } = useAuthStore();
@@ -35,18 +42,30 @@ export const Header: React.FC<IHeader> = ({ theme }) => {
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [notificationsOpen, setNotificationsOpen] = useState(false);
   const userMenuRef = useRef<HTMLDivElement | null>(null);
+  const notificationsRef = useRef<HTMLDivElement | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     function onDocClick(e: MouseEvent) {
-      if (!userMenuRef.current) return;
-      if (!userMenuRef.current.contains(e.target as Node))
+      if (
+        userMenuRef.current &&
+        !userMenuRef.current.contains(e.target as Node)
+      )
         setUserMenuOpen(false);
+      if (
+        notificationsRef.current &&
+        !notificationsRef.current.contains(e.target as Node)
+      )
+        setNotificationsOpen(false);
     }
     function onKey(e: KeyboardEvent) {
-      if (e.key === "Escape") setUserMenuOpen(false);
+      if (e.key === "Escape") {
+        setUserMenuOpen(false);
+        setNotificationsOpen(false);
+      }
     }
     document.addEventListener("mousedown", onDocClick);
     document.addEventListener("keydown", onKey);
@@ -54,7 +73,23 @@ export const Header: React.FC<IHeader> = ({ theme }) => {
       document.removeEventListener("mousedown", onDocClick);
       document.removeEventListener("keydown", onKey);
     };
-  });
+  }, []);
+
+  // Only the badge count when logged in (cheap); the full list is fetched lazily
+  // the first time the bell is opened, and served from cache after that.
+  const { data: unreadCount = 0 } = useUnreadCount(loggedIn);
+  const { data: notificationData, isLoading: isLoadingNotifications } =
+    useNotifications(loggedIn && notificationsOpen);
+  const notifications = notificationData?.data ?? [];
+
+  const { mutate: markAsRead } = useMarkNotificationRead();
+  const { mutate: markAllAsRead } = useMarkAllNotificationsRead();
+
+  const toggleNotifications = () => {
+    const next = !notificationsOpen;
+    setNotificationsOpen(next);
+    if (next) setUserMenuOpen(false);
+  };
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
   const handleModalOpen = () => setIsModalOpen(true);
@@ -123,7 +158,34 @@ export const Header: React.FC<IHeader> = ({ theme }) => {
             >
               <Avatar src={currentUser?.avatar_url as string} sizes="medium" />
             </button>
-            <img className="NotificationBell" src={Notifications} />
+            <div className="NotificationWrapper" ref={notificationsRef}>
+              <button
+                className="NotificationBellButton"
+                aria-haspopup="menu"
+                aria-expanded={notificationsOpen}
+                aria-label="Notificações"
+                onClick={toggleNotifications}
+              >
+                <img
+                  className="NotificationBell"
+                  src={Notifications}
+                  alt="Notificações"
+                />
+                {unreadCount > 0 && (
+                  <span className="NotificationBadge">
+                    {unreadCount > 9 ? "9+" : unreadCount}
+                  </span>
+                )}
+              </button>
+              {notificationsOpen && (
+                <NotificationsDropdown
+                  notifications={notifications}
+                  isLoading={isLoadingNotifications}
+                  onMarkAsRead={markAsRead}
+                  onMarkAllAsRead={markAllAsRead}
+                />
+              )}
+            </div>
             {userMenuOpen && (
               <div className="UserDropdown" role="menu">
                 <button

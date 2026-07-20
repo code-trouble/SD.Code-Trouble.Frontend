@@ -4,23 +4,21 @@ import { usePostStore } from "../../stores/postStore";
 import CustomButton from "../../components/CustomButton";
 import { ArticleEditor } from "../../components/ArticleEditor";
 import { BlueFavorite } from "../../assets/images/svg";
+import { useImageUpload } from "../../hooks/useImageUpload";
+import { useCreatePost, useUpdatePost } from "../../queries/posts";
 
 export const WriteAPost: React.FC = () => {
   const navigate = useNavigate();
-  const {
-    createPost,
-    updatePost,
-    setTitle: setStoreTitle,
-    setBody,
-    setKind,
-    isLoading,
-    error,
-    reset,
-    isEditMode,
-    editingPostId,
-    title: storeTitle,
-    body: storeBody,
-  } = usePostStore();
+  // Draft state stays in zustand (client state); saving is a server mutation.
+  const { reset, isEditMode, editingPostId, title: storeTitle, body: storeBody } =
+    usePostStore();
+
+  const { mutateAsync: createPost, isPending: isCreating } = useCreatePost();
+  const { mutateAsync: updatePost, isPending: isUpdating } = useUpdatePost();
+  const isLoading = isCreating || isUpdating;
+  const [error, setError] = useState<string | null>(null);
+
+  const { moveTmpImagesInDeltas } = useImageUpload();
 
   // ✅ apenas content começa como {}
   const [title, setTitle] = useState("");
@@ -38,15 +36,10 @@ export const WriteAPost: React.FC = () => {
   }, [isEditMode, storeTitle, storeBody]);
 
   useEffect(() => {
-    if (!isEditMode) {
-      setKind("article");
-    }
     return () => {
-      if (!isEditMode) {
-        reset();
-      }
+      if (!isEditMode) reset();
     };
-  }, [setKind, reset, isEditMode]);
+  }, [reset, isEditMode]);
 
   function navigateTo(path: string) {
     window.scrollTo(0, 0);
@@ -56,34 +49,28 @@ export const WriteAPost: React.FC = () => {
   // ✅ agora é handler de form
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-
-    console.log("🚀 Enviando post:");
-    console.log("Title:", title);
-    console.log("Description:", description);
-    console.log("Content:", content);
-    console.log("Content.ops:", content?.ops);
-    console.log("Content é objeto vazio?", Object.keys(content).length === 0);
-    console.log("Tags:", tags);
-
-    const combinedBody = {
-      content,
-      description,
-      tags,
-    };
+    setError(null);
 
     try {
-      let result;
-      if (isEditMode && editingPostId) {
-        result = await updatePost(editingPostId, {
-          title,
-          body: combinedBody,
-        });
-      } else {
-        setStoreTitle(title);
-        setBody(combinedBody);
-        setKind("article");
-        result = await createPost();
-      }
+      const [movedContent] = await moveTmpImagesInDeltas({ deltas: [content] });
+
+      const combinedBody = {
+        content: movedContent,
+        description,
+        tags,
+      };
+
+      const result =
+        isEditMode && editingPostId
+          ? await updatePost({
+              id: editingPostId,
+              data: { title, body: combinedBody, kind: "article" },
+            })
+          : await createPost({
+              kind: "article",
+              title,
+              body: combinedBody,
+            });
 
       setTitle("");
       setDescription("");
@@ -92,8 +79,9 @@ export const WriteAPost: React.FC = () => {
       reset();
 
       navigateTo(`/blog/${result.id}`);
-    } catch (error) {
-      console.error("Failed to save article:", error);
+    } catch (err) {
+      console.error("Failed to save article:", err);
+      setError("Não foi possível salvar o artigo. Tente novamente.");
     }
   }
 

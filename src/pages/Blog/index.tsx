@@ -1,13 +1,19 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import CustomButton from "../../components/CustomButton";
 import { Avatar } from "../../components/Avatar";
 import { BlogPostPreview } from "../../components/BlogPostPreview";
 import { Pagination } from "../../components/QuestionsPagination";
 import { useNavigate } from "react-router-dom";
-import { useTagStore } from "../../stores/tagStore";
 import { TagSearcher } from "../../components/TagSearcher";
 import { QuestionsSkeleton } from "../../skeletons/QuestionsPageSkeleton";
-import { usePostStore } from "../../stores/postStore";
+import { usePosts } from "../../queries/posts";
+import { useTags } from "../../queries/tags";
+import {
+  useCurrentUser,
+  useFollowingIds,
+  useSuggestions,
+  useToggleFollow,
+} from "../../queries/user";
 
 export const Blog: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -15,30 +21,28 @@ export const Blog: React.FC = () => {
   const itemsPerPage = 10;
 
   const navigate = useNavigate();
-  const {
-    tags,
-    isLoading: tagsLoading,
-    error: tagsError,
-    fetchTags,
-  } = useTagStore();
 
+  const { data: tags = [], isLoading: tagsLoading, error: tagsError } = useTags();
+
+  // Server-side pagination: we ask for one page instead of downloading every
+  // article and slicing it client-side. `isLoading` is only true on the very
+  // first load — revisits render straight from cache with no skeleton.
   const {
-    articlesList: articles,
-    isLoadingPosts: articlesLoading,
+    data: articlesPage,
+    isLoading: articlesLoading,
     error: articlesError,
-    fetchAllPosts,
-  } = usePostStore();
+  } = usePosts({ kind: "article", page: currentPage, limit: itemsPerPage });
 
-  useEffect(() => {
-    fetchAllPosts({ kind: "article" });
-    fetchTags();
-  }, [fetchAllPosts, fetchTags]);
+  const displayedPosts = articlesPage?.data ?? [];
+  const totalPages = articlesPage?.pagination?.totalPages ?? 1;
 
-  const totalPages = Math.ceil(articles.length / itemsPerPage);
-  const displayedPosts = articles.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage,
-  );
+  // "Quem Seguir": random community members, excluding self + already-followed
+  const currentUser = useCurrentUser();
+  const followingIds = useFollowingIds();
+  const { mutate: toggleFollow } = useToggleFollow();
+  const [pendingFollowId, setPendingFollowId] = useState<number | null>(null);
+  const { data: suggestions = [], isLoading: suggestionsLoading } =
+    useSuggestions(3);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -138,9 +142,9 @@ export const Blog: React.FC = () => {
               <a href="#">UI</a>
             </div>
 
-            {articlesError && articlesLoading ? (
+            {articlesError ? (
               <div style={{ color: "red", padding: "1rem" }}>
-                {articlesError}
+                {articlesError.message}
               </div>
             ) : (
               ""
@@ -221,7 +225,7 @@ export const Blog: React.FC = () => {
                       marginBottom: "10px",
                     }}
                   >
-                    {tagsError}
+                    {tagsError.message}
                   </div>
                 )}
                 {tagsLoading ? (
@@ -247,46 +251,67 @@ export const Blog: React.FC = () => {
           <div className="who-to-follow">
             <h2>Quem Seguir</h2>
             <div className="follow-area">
-              <div className="follow-block">
-                <div className="follow-info">
-                  <Avatar sizes="medium" role="Ela/Dela" name="Joana Lima" />
-                  <CustomButton
-                    padding="4.5px 12px"
-                    text="Seguir"
-                    border="2px solid #3348A4"
-                    color="#3348A4"
-                    borderRadius="75px"
-                  />
-                </div>
-                <p>Biografia do usuário, o que ele colocar no perfil e etc</p>
-              </div>
-              <div className="follow-block">
-                <div className="follow-info">
-                  <Avatar sizes="medium" role="Ela/Dela" name="Joana Lima" />
-                  <CustomButton
-                    padding="4.5px 12px"
-                    text="Seguir"
-                    border="2px solid #3348A4"
-                    color="#3348A4"
-                    borderRadius="75px"
-                  />
-                </div>
-                <p>Biografia do usuário, o que ele colocar no perfil e etc</p>
-              </div>
-              <div className="follow-block">
-                <div className="follow-info">
-                  <Avatar sizes="medium" role="Ela/Dela" name="Joana Lima" />
-                  <CustomButton
-                    padding="4.5px 12px"
-                    text="Seguir"
-                    border="2px solid #3348A4"
-                    color="#3348A4"
-                    borderRadius="75px"
-                  />
-                </div>
-                <p>Biografia do usuário, o que ele colocar no perfil e etc</p>
-              </div>
-              <a href="">Ver mais sugestões</a>
+              {suggestionsLoading ? (
+                <p>Carregando sugestões...</p>
+              ) : suggestions.length === 0 ? (
+                <p>Nenhuma sugestão no momento.</p>
+              ) : (
+                suggestions.map((user) => {
+                  const isSelf = currentUser?.id === user.id;
+                  const isFollowing = followingIds.has(user.id);
+                  const isPendingRow = pendingFollowId === user.id;
+
+                  return (
+                    <div className="follow-block" key={user.id}>
+                      <div className="follow-info">
+                        <Avatar
+                          sizes="medium"
+                          role={user.pronouns ?? undefined}
+                          name={user.display_name || user.username}
+                          src={user.avatar_url ?? undefined}
+                          onClick={() => navigateTo(`/${user.username}`)}
+                        />
+                        {!isSelf && (
+                          <CustomButton
+                            padding="4.5px 12px"
+                            text={
+                              isPendingRow
+                                ? "..."
+                                : isFollowing
+                                  ? "Seguindo"
+                                  : "Seguir"
+                            }
+                            border="2px solid #3348A4"
+                            color={isFollowing ? "#fff" : "#3348A4"}
+                            backgroundColor={
+                              isFollowing ? "#3348A4" : "transparent"
+                            }
+                            borderRadius="75px"
+                            disabled={pendingFollowId !== null}
+                            onClick={() => {
+                              setPendingFollowId(user.id);
+                              toggleFollow(
+                                { userId: user.id, isFollowing },
+                                { onSettled: () => setPendingFollowId(null) },
+                              );
+                            }}
+                          />
+                        )}
+                      </div>
+                      <p>{user.bio || "Este usuário ainda não tem bio."}</p>
+                    </div>
+                  );
+                })
+              )}
+              <a
+                href="/community"
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigateTo("/community");
+                }}
+              >
+                Ver mais sugestões
+              </a>
             </div>
           </div>
         </div>

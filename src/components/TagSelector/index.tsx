@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useMemo } from "react";
 import { TagList } from "../Tag";
-import { useTagStore } from "../../stores/tagStore";
+import { useTags } from "../../queries/tags";
 
 interface ITagSelector {
   selectedTags: string[];
@@ -15,7 +15,7 @@ export const TagSelector: React.FC<ITagSelector> = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const tagsFromStore = useTagStore((state) => state.tags);
+  const { data: tagsFromStore = [] } = useTags();
 
   const allTags = useMemo(
     () => tagsFromStore.map((tag) => tag.name),

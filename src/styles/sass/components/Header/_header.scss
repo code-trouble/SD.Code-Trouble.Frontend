@@ -166,12 +166,160 @@
       }
     }
 
+    .NotificationWrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .NotificationBellButton {
+      position: relative;
+      border: none;
+      background: transparent;
+      padding: 0;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+
+      .NotificationBell {
+        display: block;
+        transition: opacity 0.2s ease;
+      }
+
+      &:hover .NotificationBell {
+        opacity: 0.8;
+      }
+    }
+
+    .NotificationBadge {
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      min-width: 18px;
+      height: 18px;
+      padding: 0 4px;
+      border-radius: 9px;
+      background: #e5484d;
+      color: #fff;
+      font-size: 0.7rem;
+      font-weight: 600;
+      line-height: 18px;
+      text-align: center;
+      box-sizing: border-box;
+    }
+
     .NotificationBell {
       cursor: pointer;
       transition: opacity 0.2s ease;
 
       &:hover {
         opacity: 0.8;
+      }
+    }
+
+    .NotificationsDropdown {
+      position: absolute;
+      top: calc(100% + 0.5rem);
+      right: 0;
+      width: 320px;
+      max-height: 420px;
+      overflow-y: auto;
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+      z-index: 1000;
+
+      .NotificationsDropdownHeader {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.5rem;
+        padding: 0.85rem 1rem;
+        border-bottom: 1px solid #f1f1f1;
+
+        h3 {
+          margin: 0;
+          font-size: 0.95rem;
+          color: #111827;
+        }
+
+        .NotificationsMarkAll {
+          border: 0;
+          background: transparent;
+          padding: 0;
+          cursor: pointer;
+          font-size: 0.78rem;
+          color: #2dba4f;
+
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+      }
+
+      .NotificationsDropdownEmpty {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 1.5rem 1rem;
+
+        p {
+          margin: 0;
+          color: #6b7280;
+          font-size: 0.9rem;
+        }
+      }
+
+      .NotificationsList {
+        list-style: none;
+        margin: 0;
+        padding: 0.25rem 0;
+
+        .NotificationItem {
+          width: 100%;
+          display: flex;
+          align-items: flex-start;
+          gap: 0.6rem;
+          padding: 0.75rem 1rem;
+          border: 0;
+          background: transparent;
+          text-align: left;
+          cursor: pointer;
+          transition: background 0.15s ease;
+
+          &:hover {
+            background: #f9fafb;
+          }
+
+          .NotificationDot {
+            margin-top: 6px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #e5484d;
+            flex-shrink: 0;
+          }
+
+          p {
+            margin: 0;
+            font-size: 0.88rem;
+            color: #374151;
+            line-height: 1.35;
+          }
+
+          &.is-read {
+            cursor: default;
+
+            .NotificationDot {
+              background: transparent;
+            }
+
+            p {
+              color: #9ca3af;
+            }
+          }
+        }
       }
     }
 

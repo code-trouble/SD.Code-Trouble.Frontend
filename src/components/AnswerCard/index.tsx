@@ -1,14 +1,15 @@
 import React from "react";
 import { Avatar } from "../Avatar";
-import parse from "html-react-parser";
 import { formatDate } from "../../utils/formatDate";
 import { AnswerActions } from "../AnswerActions";
 import { Post } from "../../types/postTypes";
 import { useQuillToHtml } from "../../hooks/useDeltaToHtml";
+import { renderPostBody } from "../../utils/renderPostBody";
 
 interface AnswerCardProps {
   answer: Post;
   currentUserId?: number | null;
+  isModerator?: boolean;
   onEdit?: (answer: Post) => void;
   onDelete?: (id: number) => void | Promise<void>;
 }
@@ -16,10 +17,14 @@ interface AnswerCardProps {
 export const AnswerCard: React.FC<AnswerCardProps> = ({
   answer,
   currentUserId,
+  isModerator = false,
   onEdit,
   onDelete,
 }) => {
   const { convertBody } = useQuillToHtml();
+
+  const isOwner = answer.author.id === currentUserId;
+  const canDelete = isOwner || isModerator;
 
   return (
     <div className="answerDisplayBlock">
@@ -37,10 +42,11 @@ export const AnswerCard: React.FC<AnswerCardProps> = ({
         </p>
       </div>
 
-      <div className="answerText">{parse(convertBody(answer.body))}</div>
+      <div className="answerText">{renderPostBody(convertBody(answer.body))}</div>
 
-      {answer.author.id === currentUserId && (
+      {canDelete && (
         <AnswerActions
+          canEdit={isOwner}
           onEdit={() => onEdit?.(answer)}
           onDelete={() => onDelete?.(answer.id)}
         />

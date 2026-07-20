@@ -32,6 +32,7 @@
 @use "./components/LoadingScreen/loadingScreen";
 @use "./components/GenericPostPreview/genericPostPreview";
 @use "./components/AnswerActions/answerActions";
+@use "./components/ConnectionsModal/connectionsModal";
 
 @use "./pages/LandingPage/landingPage";
 @use "./pages/Questions/questions";
@@ -41,6 +42,7 @@
 @use "./pages/AskAQuestion/askAQuestion";
 @use "./pages/Onboarding/onboardingPage";
 @use "./pages/ProfilePage/profilePage";
+@use "./pages/ExploreCommunity/exploreCommunity";
 
 @font-face {
   font-family: "MS Sans Serif";

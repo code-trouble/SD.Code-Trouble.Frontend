@@ -1,6 +1,5 @@
-import React, { useEffect, useState, useCallback, useRef } from "react";
+import React, { useEffect, useState, useMemo, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import parse from "html-react-parser";
 import DOMPurify, { Config as PurifyConfig } from "dompurify";
 import { QuillDeltaToHtmlConverter } from "quill-delta-to-html";
 import "quill/dist/quill.snow.css";
@@ -15,40 +14,67 @@ import { OpenQuestionSkeleton } from "../../skeletons/OpenQuestionSkeleton";
 import { ClipLoader } from "react-spinners";
 
 import "highlight.js/styles/github-dark.css";
-import hljs from "highlight.js";
-import { useUserStore } from "../../stores/userStore";
-import { usePostStore } from "../../stores/postStore";
+import { highlightCodeBlocks } from "../../lib/highlight";
+import {
+  useCreatePost,
+  useDeletePost,
+  usePost,
+  useToggleLike,
+  useUpdatePost,
+} from "../../queries/posts";
+import {
+  useCurrentUser,
+  useFollowingIds,
+  useToggleFollow,
+} from "../../queries/user";
 import { usePostActions } from "../../hooks/usePostActions";
 import { upvote } from "../../assets/images/png";
 import { TextEditor } from "../../components/Editor";
 import { AnswerCard } from "../../components/AnswerCard";
 import { Post } from "../../types/postTypes";
+import {
+  canDeletePost,
+  canEditPost,
+  isModerator,
+} from "../../utils/permissions";
+import { useImageUpload } from "../../hooks/useImageUpload";
+import { renderPostBody } from "../../utils/renderPostBody";
+
+const purifyConfig: PurifyConfig = {
+  USE_PROFILES: { html: true },
+  ADD_TAGS: ["iframe"],
+  ADD_ATTR: ["class", "src", "href", "alt", "target"],
+};
+
+const convertDelta = (delta: any): string => {
+  if (!delta || !delta.ops) return "";
+  const converter = new QuillDeltaToHtmlConverter(delta.ops, {
+    inlineStyles: true,
+  });
+  return converter.convert();
+};
 
 export const OpenQuestion: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const {
-    currentPost: question,
-    isLoadingPosts,
-    error,
-    isPostOwner,
-    fetchPostById,
-    toggleLike,
-    isLiking,
-    createAnswer,
-    deletePost,
-    updatePost,
-  } = usePostStore();
 
   const {
-    isFollowingUser,
-    currentUser,
-    followUser,
-    unfollowUser,
-    isUpdatingFollowStatus,
-  } = useUserStore();
+    data: question,
+    isLoading: isLoadingPosts,
+    error,
+    refetch: refetchQuestion,
+  } = usePost(id);
+
+  const currentUser = useCurrentUser();
+  const followingIds = useFollowingIds();
+  const { mutate: toggleLike, isPending: isLiking } = useToggleLike();
+  const { mutate: toggleFollow, isPending: isLoadingFollow } = useToggleFollow();
+  const { mutateAsync: createPost } = useCreatePost();
+  const { mutateAsync: updatePost } = useUpdatePost();
+  const { mutateAsync: deletePost } = useDeletePost();
 
   const { handleDelete, handleEdit } = usePostActions();
+  const { moveTmpImagesInDeltas } = useImageUpload();
 
   // Estados separados para nova resposta e edição
   const [newAnswer, setNewAnswer] = useState<{ ops: any[] }>({ ops: [] });
@@ -62,39 +88,13 @@ export const OpenQuestion: React.FC = () => {
   const [isUpdatingAnswer, setIsUpdatingAnswer] = useState(false);
   const editorRef = useRef<HTMLDivElement>(null);
 
-  const fetchPost = useCallback(async () => {
-    if (id) {
-      await fetchPostById(id);
-    } else {
-      navigate("/questions");
-    }
+  useEffect(() => {
+    if (!id) navigate("/questions");
   }, [id, navigate]);
 
   useEffect(() => {
-    fetchPost();
-  }, [fetchPost]);
-
-  useEffect(() => {
-    if (!isLoadingPosts && question) {
-      document.querySelectorAll("pre").forEach((block) => {
-        hljs.highlightElement(block as HTMLElement);
-      });
-    }
+    if (!isLoadingPosts && question) highlightCodeBlocks();
   }, [question, isLoadingPosts]);
-
-  const purifyConfig: PurifyConfig = {
-    USE_PROFILES: { html: true },
-    ADD_TAGS: ["iframe"],
-    ADD_ATTR: ["class", "src", "href", "alt", "target"],
-  };
-
-  const convertDelta = (delta: any): string => {
-    if (!delta || !delta.ops) return "";
-    const converter = new QuillDeltaToHtmlConverter(delta.ops, {
-      inlineStyles: true,
-    });
-    return converter.convert();
-  };
 
   const handlePostNewAnswer = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -108,13 +108,19 @@ export const OpenQuestion: React.FC = () => {
     try {
       setIsPostingAnswer(true);
 
-      const answerToSend = newAnswer;
-      await createAnswer(question.id, answerToSend);
+      const [answerToSend] = await moveTmpImagesInDeltas({
+        deltas: [newAnswer],
+      });
+      await createPost({
+        kind: "answer",
+        body: answerToSend,
+        parent_id: question.id,
+      });
 
       setNewAnswer({ ops: [] });
 
       editorRef.current?.scrollIntoView({ behavior: "smooth" });
-      await fetchPost();
+      await refetchQuestion();
     } catch (err) {
       console.error("Erro ao postar resposta:", err);
     } finally {
@@ -129,14 +135,19 @@ export const OpenQuestion: React.FC = () => {
     try {
       setIsUpdatingAnswer(true);
 
-      const bodyToSend = editedAnswerBody;
-      await updatePost(editingAnswer.id, { body: bodyToSend });
+      const [bodyToSend] = await moveTmpImagesInDeltas({
+        deltas: [editedAnswerBody],
+      });
+      await updatePost({
+        id: editingAnswer.id,
+        data: { body: bodyToSend, kind: "answer" },
+      });
 
       // Reseta o estado só depois de concluir
       setEditingAnswer(null);
       setEditedAnswerBody({ ops: [] });
 
-      await fetchPost();
+      await refetchQuestion();
     } catch (err) {
       console.error("Erro ao atualizar resposta:", err);
     } finally {
@@ -144,33 +155,33 @@ export const OpenQuestion: React.FC = () => {
     }
   };
 
+  // Delta -> HTML -> sanitize used to re-run on every render (every like click
+  // re-sanitized the whole question). Memoized on the body only.
+  const cleanDesc = useMemo(
+    () =>
+      DOMPurify.sanitize(convertDelta(question?.body?.description), purifyConfig),
+    [question?.body?.description],
+  );
+  const cleanDetailsMemo = useMemo(
+    () => DOMPurify.sanitize(convertDelta(question?.body?.details), purifyConfig),
+    [question?.body?.details],
+  );
+
   if (error || !question || isLoadingPosts) return <OpenQuestionSkeleton />;
 
-  const handleLikeClick = async (postId: number) => {
-    try {
-      await toggleLike(postId);
-    } catch (err) {
-      console.error(err);
-    }
+  const handleLikeClick = (postId: number) => {
+    if (isLiking) return;
+    toggleLike(postId);
   };
 
+  const cleanDetails = cleanDetailsMemo;
   const tags = question.body?.tags || [];
-  const descriptionHtml = convertDelta(question.body?.description);
-  const detailsHtml = convertDelta(question.body?.details);
-
-  const cleanDesc = DOMPurify.sanitize(descriptionHtml, purifyConfig);
-  const cleanDetails = detailsHtml
-    ? DOMPurify.sanitize(detailsHtml, purifyConfig)
-    : "";
 
   const questionAuthor = question.author?.id;
-  const isFollowing = isFollowingUser(questionAuthor);
+  const isFollowing = questionAuthor ? followingIds.has(questionAuthor) : false;
   const handleFollow = () => {
-    if (question.author.id) {
-      isFollowing ? unfollowUser(questionAuthor) : followUser(questionAuthor);
-    }
+    if (questionAuthor) toggleFollow({ userId: questionAuthor, isFollowing });
   };
-  const isLoadingFollow = isUpdatingFollowStatus(questionAuthor || 0);
 
   const answers = question?.answers || [];
 
@@ -205,14 +216,14 @@ export const OpenQuestion: React.FC = () => {
 
         {/* Description */}
         <div className="question-description ql-container ql-snow">
-          <div className="ql-editor">{parse(cleanDesc)}</div>
+          <div className="ql-editor">{renderPostBody(cleanDesc)}</div>
         </div>
 
         {/* Details */}
         {cleanDetails && (
           <section>
             <div className="open-question-details ql-container ql-snow">
-              <div className="ql-editor">{parse(cleanDetails)}</div>
+              <div className="ql-editor">{renderPostBody(cleanDetails)}</div>
             </div>
           </section>
         )}
@@ -240,7 +251,7 @@ export const OpenQuestion: React.FC = () => {
 
           <div className="favoritesNoptions">
             <img src={addToFavorite} alt="add to favorites" />
-            {isPostOwner(question, currentUser?.id) && (
+            {canDeletePost(question, currentUser) && (
               <div style={{ position: "relative" }}>
                 <img
                   src={threeDotMenu}
@@ -262,20 +273,22 @@ export const OpenQuestion: React.FC = () => {
                       minWidth: "120px",
                     }}
                   >
-                    <button
-                      onClick={() => handleEdit(question)}
-                      style={{
-                        display: "block",
-                        width: "100%",
-                        padding: "8px 16px",
-                        border: "none",
-                        background: "none",
-                        textAlign: "left",
-                        cursor: "pointer",
-                      }}
-                    >
-                      Editar
-                    </button>
+                    {canEditPost(question, currentUser) && (
+                      <button
+                        onClick={() => handleEdit(question)}
+                        style={{
+                          display: "block",
+                          width: "100%",
+                          padding: "8px 16px",
+                          border: "none",
+                          background: "none",
+                          textAlign: "left",
+                          cursor: "pointer",
+                        }}
+                      >
+                        Editar
+                      </button>
+                    )}
                     <button
                       onClick={() =>
                         handleDelete(question.id, {
@@ -344,7 +357,7 @@ export const OpenQuestion: React.FC = () => {
             <div className="filterAnswers">
               <p>Ordenar por:</p>
               <div className="filterAnswersDropdown">
-                <select className="order-select">
+                <select className="order-select" aria-label="Ordenar respostas">
                   <option value="newest">Mais recentes</option>
                   <option value="oldest">Mais antigas</option>
                   <option value="top">Mais curtidas</option>
@@ -373,6 +386,7 @@ export const OpenQuestion: React.FC = () => {
                   key={ans.id}
                   answer={ans}
                   currentUserId={currentUser?.id ?? null}
+                  isModerator={isModerator(currentUser)}
                   onEdit={() => handleEditAnswerClick(ans)}
                   onDelete={async (id) => {
                     if (
@@ -381,7 +395,7 @@ export const OpenQuestion: React.FC = () => {
                       )
                     ) {
                       await deletePost(id);
-                      await fetchPost();
+                      await refetchQuestion();
                     }
                   }}
                 />

@@ -6,7 +6,11 @@ import { ProfileDetailsSection } from "../../components/OnboadingSection/Profile
 import { SocialsSection } from "../../components/OnboadingSection/SocialsSection";
 import OnboardingStepper from "../../components/Stepper";
 import { useOnboardingStore } from "../../stores/onboardingStore";
-import { useUserStore } from "../../stores/userStore";
+import {
+  useCurrentUser,
+  useUpdateInterests,
+  useUpdateProfile,
+} from "../../queries/user";
 import { toast } from "sonner";
 
 export const Onboarding = () => {
@@ -18,7 +22,9 @@ export const Onboarding = () => {
     updateProfileDetail,
     updateSocialLink,
   } = useOnboardingStore();
-  const { updateProfile, updateUserInterests, currentUser } = useUserStore();
+  const currentUser = useCurrentUser();
+  const { mutateAsync: updateProfile } = useUpdateProfile();
+  const { mutateAsync: updateUserInterests } = useUpdateInterests();
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isInitialized, setIsInitialized] = useState(false);

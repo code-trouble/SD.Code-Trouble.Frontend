@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useState } from "react";
 import AEditor from "./editor";
 import Quill from "quill";
 import { TagList } from "../Tag";
-import { useTagStore } from "../../stores/tagStore";
+import { useTags } from "../../queries/tags";
 import { useImageUpload } from "../../hooks/useImageUpload";
 import { ClipLoader } from "react-spinners";
 
@@ -32,7 +32,7 @@ export const ArticleEditor: React.FC<IArticleEditor> = ({
   );
 
   const quillRef = useRef<Quill | null>(null);
-  const tagsFromStore = useTagStore((state) => state.tags);
+  const { data: tagsFromStore = [] } = useTags();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const { uploadFile } = useImageUpload();
   const [uploading, setUploading] = useState(false);

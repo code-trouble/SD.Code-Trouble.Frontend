@@ -1,119 +1,91 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { AddToFavorite, ThreeDotsMenu } from "../../assets/images/svg";
 import { blueComment, blueHeart } from "../../assets/images/svg/icons";
 import { Avatar } from "../../components/Avatar";
 import { TagList } from "../../components/Tag";
-import { usePostStore } from "../../stores/postStore";
 import { useNavigate, useParams } from "react-router-dom";
 import { QuillDeltaToHtmlConverter } from "quill-delta-to-html";
 import { OpenQuestionSkeleton } from "../../skeletons/OpenQuestionSkeleton";
-import parse from "html-react-parser";
 import DOMPurify, { Config as PurifyConfig } from "dompurify";
-import hljs from "highlight.js";
+import { highlightCodeBlocks } from "../../lib/highlight";
 import "highlight.js/styles/github-dark.css";
 import "quill/dist/quill.snow.css";
-import { useUserStore } from "../../stores/userStore";
+import { usePost, useToggleLike } from "../../queries/posts";
+import {
+  useCurrentUser,
+  useFollowingIds,
+  useProfile,
+  useToggleFollow,
+} from "../../queries/user";
 import { usePostActions } from "../../hooks/usePostActions";
 import MoreArticlesSection from "../../components/MoreArticlesSection";
 import { ClipLoader } from "react-spinners";
+import { canDeletePost, canEditPost } from "../../utils/permissions";
+import { renderPostBody } from "../../utils/renderPostBody";
+
+const purifyConfig: PurifyConfig = {
+  USE_PROFILES: { html: true },
+  ADD_TAGS: ["iframe"],
+  ADD_ATTR: ["class", "src", "href", "alt", "target"],
+};
+
+const convertDelta = (delta: any): string => {
+  if (!delta || !delta.ops) return "";
+  const converter = new QuillDeltaToHtmlConverter(delta.ops, {
+    inlineStyles: true,
+  });
+  return converter.convert();
+};
 
 export const OpenArticle: React.FC = () => {
   const [showMenu, setShowMenu] = useState(false);
-  const [isLoadingArticle, setIsLoadingArticle] = useState(true); // Local state
 
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
-  const {
-    fetchPostById,
-    currentPost: article,
-    error,
-    isPostOwner,
-    toggleLike,
-    isLiking,
-  } = usePostStore();
+  const { data: article, isLoading: isLoadingArticle, error } = usePost(id);
+  const currentUser = useCurrentUser();
+  const followingIds = useFollowingIds();
+  const { mutate: toggleLike, isPending: isLiking } = useToggleLike();
+  const { mutate: toggleFollow, isPending: isLoadingFollow } = useToggleFollow();
 
-  const {
-    currentUser,
-    profileUser,
-    fetchUserProfile,
-    isFollowingUser,
-    followUser,
-    unfollowUser,
-    isUpdatingFollowStatus,
-  } = useUserStore();
+  const { data: postOwner } = useProfile(article?.author?.username);
 
   const { handleDelete, handleEdit } = usePostActions();
 
-  const convertDelta = (delta: any): string => {
-    if (!delta || !delta.ops) return "";
-    const converter = new QuillDeltaToHtmlConverter(delta.ops, {
-      inlineStyles: true,
-    });
-    return converter.convert();
-  };
-
-  const fetchPost = useCallback(async () => {
-    if (id) {
-      setIsLoadingArticle(true);
-      try {
-        await fetchPostById(id);
-      } finally {
-        setIsLoadingArticle(false);
-      }
-    } else {
-      navigate("/blog");
-    }
-  }, [id, navigate, fetchPostById]);
+  useEffect(() => {
+    if (!id) navigate("/blog");
+  }, [id, navigate]);
 
   useEffect(() => {
-    fetchPost();
-  }, [fetchPost]);
-
-  useEffect(() => {
-    if (!isLoadingArticle && article) {
-      document.querySelectorAll("pre").forEach((block) => {
-        hljs.highlightElement(block as HTMLElement);
-      });
-    }
+    if (!isLoadingArticle && article) highlightCodeBlocks();
   }, [article, isLoadingArticle]);
 
-  useEffect(() => {
-    if (article?.author?.username) {
-      fetchUserProfile(article.author.username);
-    }
-  }, [article?.author?.username]);
-
-  const postOwner = profileUser;
-
   const authorId = article?.author?.id;
-  const isFollowing = authorId ? isFollowingUser(authorId) : false;
-  const isLoadingFollow = authorId ? isUpdatingFollowStatus(authorId) : false;
+  const isFollowing = authorId ? followingIds.has(authorId) : false;
 
   const handleFollow = () => {
     if (!authorId) return;
-    isFollowing ? unfollowUser(authorId) : followUser(authorId);
+    toggleFollow({ userId: authorId, isFollowing });
   };
 
-  const purifyConfig: PurifyConfig = {
-    USE_PROFILES: { html: true },
-    ADD_TAGS: ["iframe"],
-    ADD_ATTR: ["class", "src", "href", "alt", "target"],
-  };
+  // Delta -> HTML -> sanitize is expensive; without this it re-ran on every
+  // single render (including every like click).
+  const cleanBody = useMemo(
+    () =>
+      article?.body?.content
+        ? DOMPurify.sanitize(convertDelta(article.body.content), purifyConfig)
+        : "",
+    [article?.body?.content],
+  );
 
   if (error || !article || isLoadingArticle) return <OpenQuestionSkeleton />;
 
   const tags = article.body?.tags || [];
-  const bodyHtml = convertDelta(article.body.content);
-  const cleanBody = DOMPurify.sanitize(bodyHtml, purifyConfig);
 
-  const handleToggleLike = async () => {
+  const handleToggleLike = () => {
     if (!article || isLiking) return;
-    try {
-      await toggleLike(article.id);
-    } catch (err) {
-      console.error("Failed to toggle like:", err);
-    }
+    toggleLike(article.id);
   };
 
   return (
@@ -192,7 +164,7 @@ export const OpenArticle: React.FC = () => {
               style={{ position: "relative" }}
             >
               <img src={AddToFavorite} alt="add to favorites" />
-              {isPostOwner(article, currentUser?.id) && (
+              {canDeletePost(article, currentUser) && (
                 <div>
                   <img
                     onClick={() => setShowMenu((prev) => !prev)}
@@ -215,20 +187,22 @@ export const OpenArticle: React.FC = () => {
                         minWidth: "120px",
                       }}
                     >
-                      <button
-                        onClick={() => handleEdit(article)}
-                        style={{
-                          display: "block",
-                          width: "100%",
-                          padding: "8px 16px",
-                          border: "none",
-                          background: "none",
-                          textAlign: "left",
-                          cursor: "pointer",
-                        }}
-                      >
-                        Editar
-                      </button>
+                      {canEditPost(article, currentUser) && (
+                        <button
+                          onClick={() => handleEdit(article)}
+                          style={{
+                            display: "block",
+                            width: "100%",
+                            padding: "8px 16px",
+                            border: "none",
+                            background: "none",
+                            textAlign: "left",
+                            cursor: "pointer",
+                          }}
+                        >
+                          Editar
+                        </button>
+                      )}
                       <button
                         onClick={() =>
                           handleDelete(article.id, {
@@ -266,7 +240,7 @@ export const OpenArticle: React.FC = () => {
 
         <div className="delta-render-area">
           <div className="ql-container ql-snow">
-            <div className="ql-editor">{parse(cleanBody)}</div>
+            <div className="ql-editor">{renderPostBody(cleanBody)}</div>
           </div>
         </div>
       </div>
