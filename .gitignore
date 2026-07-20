@@ -27,3 +27,18 @@ dist-ssr
 *.sw?
 
 .env
+
+# Yarn (padrão oficial para nodeLinker: node-modules)
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+
+# Claude Code (arquivos locais/pessoais do assistente)
+.claude/
+
+# Tests
+coverage
