@@ -1,27 +1,26 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthModalStore } from "../../stores/authModalStore";
-import { useUserStore } from "../../stores/userStore";
+import { useMe } from "../../queries/user";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
 }
 
 export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
-  const { currentUser, isInitializing } = useUserStore();
+  const { data: currentUser, isPending } = useMe();
   const { openModal } = useAuthModalStore();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!isInitializing && !currentUser) {
+    if (!isPending && !currentUser) {
       openModal("signIn");
       navigate("/", { replace: true });
     }
-  }, [currentUser, isInitializing, openModal, navigate]);
+  }, [currentUser, isPending, openModal, navigate]);
 
-  if (isInitializing) {
-    return null;
-  }
+  // Only protected routes wait for the session — public pages render right away.
+  if (isPending) return null;
 
   return currentUser ? <>{children}</> : null;
 };
