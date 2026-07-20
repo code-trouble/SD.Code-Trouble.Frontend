@@ -6,23 +6,18 @@ import { TagSelector } from "../../components/TagSelector";
 import { usePostStore } from "../../stores/postStore";
 import { TextEditor } from "../../components/Editor";
 import { useImageUpload } from "../../hooks/useImageUpload";
+import { useCreatePost, useUpdatePost } from "../../queries/posts";
 
 export const AskAQuestion: React.FC = () => {
   const navigate = useNavigate();
-  const {
-    createPost,
-    updatePost,
-    setTitle: setStoreTitle,
-    setBody,
-    setKind,
-    isLoading,
-    error,
-    reset,
-    isEditMode,
-    editingPostId,
-    title: storeTitle,
-    body: storeBody,
-  } = usePostStore();
+  // Draft state stays in zustand (client state); saving is a server mutation.
+  const { reset, isEditMode, editingPostId, title: storeTitle, body: storeBody } =
+    usePostStore();
+
+  const { mutateAsync: createPost, isPending: isCreating } = useCreatePost();
+  const { mutateAsync: updatePost, isPending: isUpdating } = useUpdatePost();
+  const isLoading = isCreating || isUpdating;
+  const [error, setError] = useState<string | null>(null);
 
   const { moveTmpImagesInDeltas } = useImageUpload();
 
@@ -54,27 +49,28 @@ export const AskAQuestion: React.FC = () => {
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
-    const combinedBody = {
-      description,
-      details,
-      tags,
-    };
-
     try {
-      await moveTmpImagesInDeltas({ deltas: [description, details] });
+      const [movedDescription, movedDetails] = await moveTmpImagesInDeltas({
+        deltas: [description, details],
+      });
 
-      let result;
-      if (isEditMode && editingPostId) {
-        result = await updatePost(editingPostId, {
-          title,
-          body: combinedBody,
-        });
-      } else {
-        setStoreTitle(title);
-        setBody(combinedBody);
-        setKind("question");
-        result = await createPost();
-      }
+      const combinedBody = {
+        description: movedDescription,
+        details: movedDetails,
+        tags,
+      };
+
+      const result =
+        isEditMode && editingPostId
+          ? await updatePost({
+              id: editingPostId,
+              data: { title, body: combinedBody, kind: "question" },
+            })
+          : await createPost({
+              kind: "question",
+              title,
+              body: combinedBody,
+            });
 
       setTitle("");
       setDescription({});
@@ -83,8 +79,9 @@ export const AskAQuestion: React.FC = () => {
       reset();
 
       navigateTo(`/questions/${result.id}`);
-    } catch (error) {
-      console.error("Failed to save post:", error);
+    } catch (err) {
+      console.error("Failed to save post:", err);
+      setError("Não foi possível salvar a pergunta. Tente novamente.");
     }
   }
 

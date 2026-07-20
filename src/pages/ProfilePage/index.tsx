@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from "react";
-import { useUserStore } from "../../stores/userStore";
+import React, { useState } from "react";
 import { pfpPageBanner, profileAvatar } from "../../assets/images/png";
 import CustomButton from "../../components/CustomButton";
 import { TagBadge } from "../../components/TagBadge";
@@ -7,9 +6,19 @@ import { ProfileSkeleton } from "../../skeletons/ProfileSkeleton";
 import { useNavigate, useParams } from "react-router-dom";
 import { ProfileTagBadge } from "../../components/ProfileTagBadge";
 import { ClipLoader } from "react-spinners";
-import { usePostStore } from "../../stores/postStore";
 import { PostPreview } from "../../components/GenericPostPreview";
 import { filterDropdownArrow } from "../../assets/images/svg";
+import {
+  useCurrentUser,
+  useFollowingIds,
+  useProfile,
+  useToggleFollow,
+} from "../../queries/user";
+import { usePosts } from "../../queries/posts";
+import {
+  ConnectionsModal,
+  ConnectionsType,
+} from "../../components/ConnectionsModal";
 
 type PostKindFilter = "article" | "question" | "answer" | "";
 
@@ -20,73 +29,45 @@ export const ProfilePage: React.FC = () => {
     window.scrollTo(0, 0);
     navigate(path);
   }
-  const {
-    currentUser,
-    profileUser,
-    isLoadingProfile,
-    fetchUserProfile,
-    clearProfileUser,
-    isFollowingUser,
-    unfollowUser,
-    followUser,
-    isUpdatingFollowStatus,
-  } = useUserStore();
 
-  const [isTagsPopupOpen, setIsTagsPopupOpen] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [filtro, setFiltro] = useState<PostKindFilter>("");
-  const { userPosts, fetchUserPosts, isLoadingPosts, clearPosts } =
-    usePostStore();
-
+  const currentUser = useCurrentUser();
   const isOwnProfile = currentUser?.username === username;
+
+  // Own profile comes from the cached /me query — no extra request.
+  const {
+    data: profileUser,
+    isLoading: isLoadingProfile,
+    error: profileError,
+  } = useProfile(!isOwnProfile ? username : undefined);
 
   const displayUser = isOwnProfile ? currentUser : profileUser;
 
-  const handleFollow = () => {
-    if (displayUser) {
-      isFollowing ? unfollowUser(displayUser.id) : followUser(displayUser.id);
-    }
-  };
+  const followingIds = useFollowingIds();
+  const { mutate: toggleFollow, isPending: isLoadingFollow } = useToggleFollow();
+
+  const [isTagsPopupOpen, setIsTagsPopupOpen] = useState(false);
+  const [filtro, setFiltro] = useState<PostKindFilter>("");
+  const [connectionsType, setConnectionsType] =
+    useState<ConnectionsType | null>(null);
 
   const isFollowing =
-    displayUser && !isOwnProfile ? isFollowingUser(displayUser.id) : false;
+    displayUser && !isOwnProfile ? followingIds.has(displayUser.id) : false;
 
-  const isLoadingFollow = isUpdatingFollowStatus(displayUser?.id || 0);
+  const handleFollow = () => {
+    if (displayUser) toggleFollow({ userId: displayUser.id, isFollowing });
+  };
 
-  useEffect(() => {
-    if (!username) return;
+  const { data: userPostsPage, isLoading: isLoadingPosts } = usePosts(
+    {
+      author_id: displayUser?.id,
+      kind: filtro === "" ? undefined : filtro,
+      limit: 20,
+    },
+    !!displayUser?.id,
+  );
+  const userPosts = userPostsPage?.data ?? [];
 
-    setError(null);
-
-    if (isOwnProfile) {
-      clearProfileUser();
-      return;
-    }
-
-    const loadProfile = async () => {
-      try {
-        await fetchUserProfile(username);
-      } catch (error) {
-        console.error("Erro ao carregar perfil:", error);
-        setError("Usuário não encontrado");
-      }
-    };
-
-    loadProfile();
-  }, [username, isOwnProfile, fetchUserProfile, clearProfileUser]);
-
-  useEffect(() => {
-    return () => {
-      clearProfileUser();
-      clearPosts();
-    };
-  }, [clearProfileUser]);
-
-  useEffect(() => {
-    if (!displayUser?.id) return;
-    const kind = filtro === "" ? undefined : filtro;
-    fetchUserPosts(displayUser.id, kind);
-  }, [filtro, displayUser?.id, fetchUserPosts]);
+  const error = profileError ? "Usuário não encontrado" : null;
 
   const getPostDescription = (body: any): string => {
     if (body?.content?.ops) {
@@ -176,14 +157,22 @@ export const ProfilePage: React.FC = () => {
                 <p>{displayUser._count?.posts}</p>
                 <p>publicações</p>
               </div>
-              <div className="followers count">
+              <button
+                type="button"
+                className="followers count clickable"
+                onClick={() => setConnectionsType("followers")}
+              >
                 <p>{displayUser._count?.followers}</p>
                 <p>seguidores</p>
-              </div>
-              <div className="following count">
+              </button>
+              <button
+                type="button"
+                className="following count clickable"
+                onClick={() => setConnectionsType("following")}
+              >
                 <p>{displayUser._count?.following}</p>
                 <p>seguindo</p>
-              </div>
+              </button>
             </div>
           </div>
 
@@ -265,6 +254,7 @@ export const ProfilePage: React.FC = () => {
             >
               <select
                 className="filter-select"
+                aria-label="Filtrar posts por tipo"
                 onChange={(e) => setFiltro(e.target.value as PostKindFilter)}
                 value={filtro}
               >
@@ -305,6 +295,14 @@ export const ProfilePage: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {connectionsType && (
+        <ConnectionsModal
+          username={displayUser.username}
+          type={connectionsType}
+          onClose={() => setConnectionsType(null)}
+        />
+      )}
     </>
   );
 };
