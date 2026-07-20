@@ -14,6 +14,13 @@ interface MoveTmpImagesOptions {
   deltas: any[]; // list of deltas (description, details, etc.)
 }
 
+// Images are uploaded to a temporary folder while editing, then moved (Cloudinary
+// rename) to the permanent folder on submit. The rename assigns a NEW version, so
+// the permanent URL cannot be rebuilt from the tmp URL by string-replace (the old
+// /v<version>/ would 404). The backend returns the canonical new URL per image in
+// a { [oldUrl]: newUrl } map — we must persist exactly that.
+const TMP_IMAGE_FOLDER = "tmp-post-images";
+
 export const useImageUpload = (options: UseImageUploadOptions = {}) => {
   const { onSuccess, onError, maxSizeMB = 5, showToast = true } = options;
 
@@ -117,21 +124,42 @@ export const useImageUpload = (options: UseImageUploadOptions = {}) => {
 
   async function moveTmpImagesInDeltas({
     deltas,
-  }: MoveTmpImagesOptions): Promise<void> {
-    const allImages: string[] = [];
+  }: MoveTmpImagesOptions): Promise<any[]> {
+    const tmpImages: string[] = [];
 
     deltas.forEach((delta) => {
       if (!delta?.ops) return;
       delta.ops.forEach((op: any) => {
-        if (op.insert?.image) {
-          allImages.push(op.insert.image);
-        }
+        const image = op.insert?.image;
+        if (typeof image === "string" && image.includes(`/${TMP_IMAGE_FOLDER}/`))
+          tmpImages.push(image);
       });
     });
 
-    if (allImages.length === 0) return;
+    // No temporary images to move — return the deltas untouched (e.g. editing a
+    // post whose images were already moved to the permanent folder).
+    if (tmpImages.length === 0) return deltas;
 
-    await api.post("/cloudinary/move-tmp-to-post", { urls: allImages });
+    const { data: urlMap } = await api.post<Record<string, string>>(
+      "/cloudinary/move-tmp-to-post",
+      { urls: tmpImages },
+    );
+
+    // Persist the exact permanent URL the backend returned for each image.
+    return deltas.map((delta) => {
+      if (!delta?.ops) return delta;
+      return {
+        ...delta,
+        ops: delta.ops.map((op: any) => {
+          const image = op.insert?.image;
+          const movedUrl =
+            typeof image === "string" ? urlMap?.[image] : undefined;
+          return movedUrl
+            ? { ...op, insert: { ...op.insert, image: movedUrl } }
+            : op;
+        }),
+      };
+    });
   }
 
   const reset = () => {

@@ -1,6 +1,7 @@
-import { useUserStore } from "../stores/userStore";
 import { useAuthModalStore } from "../stores/authModalStore";
 import { api } from "./api";
+import { queryClient } from "../lib/queryClient";
+import { userKeys } from "../queries/keys";
 
 type FailedRequest = {
   onSuccess: () => void;
@@ -43,7 +44,8 @@ export function initApiLayer() {
           failedRequestsQueue = [];
 
           useAuthModalStore.getState().openModal("signIn");
-          useUserStore.getState().clearUser();
+          queryClient.setQueryData(userKeys.me(), null);
+          queryClient.clear();
 
           return Promise.reject(err);
         } finally {

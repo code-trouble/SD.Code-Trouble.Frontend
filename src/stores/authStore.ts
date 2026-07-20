@@ -1,7 +1,8 @@
 import { create } from "zustand";
 import { api } from "../services/api";
-import { useUserStore } from "./userStore";
 import { AuthState } from "../types/authTypes";
+import { queryClient } from "../lib/queryClient";
+import { userKeys } from "../queries/keys";
 
 export const useAuthStore = create<AuthState>((set) => ({
   isLoading: false,
@@ -18,7 +19,10 @@ export const useAuthStore = create<AuthState>((set) => ({
         err,
       );
     } finally {
-      useUserStore.getState().clearUser();
+      // Drop every cached response so the next user never sees the previous
+      // one's data (notifications, profile, likes...).
+      queryClient.setQueryData(userKeys.me(), null);
+      queryClient.clear();
       set({ isLoading: false, error: null });
     }
   },
@@ -28,8 +32,9 @@ export const useAuthStore = create<AuthState>((set) => ({
 
     try {
       await api.post("/auth/login", data);
-
-      await useUserStore.getState().fetchCurrentUser();
+      // Pull the fresh session before we report success, so the UI flips to
+      // "logged in" with the user already in cache.
+      await queryClient.refetchQueries({ queryKey: userKeys.me() });
     } catch (err: any) {
       const message =
         err.response?.data?.message || "Email ou senha inválidos.";
