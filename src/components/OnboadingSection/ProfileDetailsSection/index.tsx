@@ -1,10 +1,10 @@
 import { useOnboardingStore } from "../../../stores/onboardingStore";
-import { useUserStore } from "../../../stores/userStore";
+import { useCurrentUser } from "../../../queries/user";
 import { ProfileImages } from "../../profileImages";
 import { SectionContainer } from "../SectionContainer";
 
 export const ProfileDetailsSection = () => {
-  const { currentUser } = useUserStore();
+  const currentUser = useCurrentUser();
   const { profileDetails, updateProfileDetail } = useOnboardingStore();
 
   const pronounOptions = [

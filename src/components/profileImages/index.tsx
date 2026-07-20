@@ -5,11 +5,13 @@ import {
   pfpPageBanner,
   fulanoPfp,
 } from "../../assets/images/png";
-import { useUserStore } from "../../stores/userStore";
+import { useCurrentUser, useUpdateProfile } from "../../queries/user";
 import { useImageUpload } from "../../hooks/useImageUpload";
+import { cld } from "../../utils/cloudinary";
 
 export const ProfileImages: React.FC = () => {
-  const { currentUser, updateProfile } = useUserStore();
+  const currentUser = useCurrentUser();
+  const { mutateAsync: updateProfile } = useUpdateProfile();
 
   const [bannerPreview, setBannerPreview] = useState<string | null>(null);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
@@ -75,8 +77,9 @@ export const ProfileImages: React.FC = () => {
   };
 
   const displayBanner =
-    bannerPreview || currentUser?.banner_url || pfpPageBanner;
-  const displayPfp = avatarPreview || currentUser?.avatar_url || fulanoPfp;
+    bannerPreview || cld(currentUser?.banner_url, { w: 1200 }) || pfpPageBanner;
+  const displayPfp =
+    avatarPreview || cld(currentUser?.avatar_url, { w: 240 }) || fulanoPfp;
 
   return (
     <div className="banner-pfp">

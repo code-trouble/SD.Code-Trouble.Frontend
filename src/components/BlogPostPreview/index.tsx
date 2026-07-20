@@ -5,6 +5,8 @@ import heart from "../../assets/images/svg/icons/blueHeart.svg";
 import favorite from "../../assets/images/svg/icons/favoriteBlog.svg";
 import { Post } from "../../types/postTypes";
 import { formatDate } from "../../utils/formatDate";
+import { PostImage } from "../PostImage";
+import { logosArticleImg } from "../../assets/images/png";
 
 interface IBlogPostPreview {
   article: Post;
@@ -52,7 +54,12 @@ export const BlogPostPreview: React.FC<IBlogPostPreview> = ({
         </div>
         {image && ( // Conditionally render the image container
           <div className="post-image">
-            <img src={imgSrc} alt="Blog Post placeholder image" />
+            <PostImage
+              src={imgSrc}
+              fallbackSrc={logosArticleImg}
+              width={500}
+              alt="Blog Post placeholder image"
+            />
           </div>
         )}
       </div>

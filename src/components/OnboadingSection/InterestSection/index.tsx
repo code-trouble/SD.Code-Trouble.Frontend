@@ -1,14 +1,14 @@
-import { useTagStore } from "../../../stores/tagStore";
+import { useTags } from "../../../queries/tags";
 import { TagBadge } from "../../TagBadge";
 import { SectionContainer } from "../SectionContainer";
 import { useOnboardingStore } from "../../../stores/onboardingStore";
 import { useEffect, useState } from "react";
-import { useUserStore } from "../../../stores/userStore";
+import { useCurrentUser } from "../../../queries/user";
 
 export const InterestSection = () => {
-  const { tags } = useTagStore();
+  const { data: tags = [] } = useTags();
   const { interestTagIds, setInterests } = useOnboardingStore();
-  const { currentUser } = useUserStore();
+  const currentUser = useCurrentUser();
   const [isInitialized, setIsInitialized] = useState(false);
 
   useEffect(() => {

@@ -1,8 +1,7 @@
-import { useEffect } from "react";
-import { usePostStore } from "../../stores/postStore";
 import MoreArticlesPreview from "../MoreArticlesPreview";
 import { formatDate } from "../../utils/formatDate";
 import { useNavigate } from "react-router-dom";
+import { usePosts } from "../../queries/posts";
 
 interface MoreArticlesSectionProps {
   currentArticleId: number;
@@ -13,24 +12,24 @@ const MoreArticlesSection: React.FC<MoreArticlesSectionProps> = ({
   currentArticleId,
   authorId,
 }) => {
-  const { fetchUserPosts, userPosts, isLoadingPosts } = usePostStore();
   const navigate = useNavigate();
   function navigateTo(path: string) {
     window.scrollTo(0, 0);
     navigate(path);
   }
 
-  useEffect(() => {
-    if (authorId) {
-      fetchUserPosts(authorId, "article");
-    }
-  }, [authorId, fetchUserPosts]);
+  // Only need a couple of the author's other articles — ask the server for 3
+  // (so we still have 2 after excluding the one being read).
+  const { data, isLoading } = usePosts(
+    { kind: "article", author_id: authorId, limit: 3 },
+    !!authorId,
+  );
 
-  const filteredArticles = userPosts
+  const filteredArticles = (data?.data ?? [])
     .filter((article) => article.id !== currentArticleId)
     .slice(0, 2);
 
-  if (isLoadingPosts) {
+  if (isLoading) {
     return <div>Loading...</div>;
   }
 
