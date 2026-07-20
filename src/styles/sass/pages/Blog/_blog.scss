@@ -180,6 +180,17 @@
             display: flex;
             flex-direction: column;
             gap: 15px;
+            // padding + negative margin: room for the hover highlight
+            // without shifting the layout
+            padding: 12px;
+            margin: -12px;
+            border-radius: 10px;
+            transition: background-color 0.2s ease;
+
+            &:hover {
+              background-color: rgba($tertiaryColor, 0.06);
+            }
+
             p {
               font-size: 14px;
               font-family: $hindFont;
@@ -193,11 +204,72 @@
               justify-content: space-between;
               align-items: center;
 
+              .avatar-container {
+                cursor: pointer;
+
+                .avatar-img-medium {
+                  transition: transform 0.2s ease;
+                }
+
+                .avatar-name-medium {
+                  transition: color 0.2s ease;
+                }
+
+                &:hover {
+                  .avatar-img-medium {
+                    transform: scale(1.08);
+                  }
+
+                  .avatar-name-medium {
+                    color: $tertiaryColor;
+                    text-decoration: underline;
+                  }
+                }
+              }
+
+              // box-shadow/transform only: CustomButton colors are inline
+              // styles, so a CSS background hover would need !important
+              .custom-button {
+                cursor: pointer;
+                transition:
+                  box-shadow 0.2s ease,
+                  transform 0.2s ease;
+
+                &:hover:not(:disabled) {
+                  box-shadow: 0 0 0 3px rgba($tertiaryColor, 0.18);
+                  transform: translateY(-1px);
+                }
+              }
+
               .avatar-role-medium {
                 font-family: $montserratFont;
                 color: $dimGray;
                 font-size: 12px;
               }
+            }
+          }
+        }
+
+        a {
+          font-family: $hindFont;
+          font-size: 16px;
+          color: $tertiaryColor;
+          text-decoration: none;
+          width: fit-content;
+          transition: color 0.2s ease;
+
+          &::after {
+            content: " →";
+            opacity: 0;
+            transition: opacity 0.2s ease;
+          }
+
+          &:hover {
+            color: #263681; // $tertiaryColor escurecido
+            text-decoration: underline;
+
+            &::after {
+              opacity: 1;
             }
           }
         }

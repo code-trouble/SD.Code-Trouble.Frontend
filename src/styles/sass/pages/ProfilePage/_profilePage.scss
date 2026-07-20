@@ -87,6 +87,20 @@
       .count {
         display: flex;
         gap: 5px;
+
+        &.clickable {
+          background: transparent;
+          border: none;
+          padding: 0;
+          font: inherit;
+          color: inherit;
+          cursor: pointer;
+
+          &:hover p {
+            color: $eerieBlack;
+            text-decoration: underline;
+          }
+        }
       }
     }
 

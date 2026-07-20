@@ -24,12 +24,24 @@ export interface Post {
   isAccepted?: boolean;
 }
 
+export type PostSort = "newest" | "oldest" | "top";
+
 export interface PostFilters {
   kind?: "article" | "question" | "answer";
   limit?: number;
   page?: number;
   author_id?: number;
   parent_id?: number;
+  /** Tag names — backend matches posts having ANY of them. */
+  tags?: string[];
+  sort?: PostSort;
+  /** Case-insensitive search on the title. */
+  q?: string;
+}
+
+export interface PostListResponse {
+  data: Post[];
+  pagination: PostPagination;
 }
 
 export interface PostPagination {

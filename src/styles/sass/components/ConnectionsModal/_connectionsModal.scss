@@ -1,0 +1,190 @@
+@use "../../base/variables" as *;
+
+.connections-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 16px; // o modal nunca encosta nas bordas da viewport
+  z-index: 1000;
+
+  // FocusLock injeta uma div entre o overlay e o dialog: ela também
+  // precisa centralizar o conteúdo, senão o flex do overlay centraliza
+  // só o wrapper e o dialog fica solto dentro dele.
+  .connections-focus-lock {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: 100%;
+    max-height: 100%;
+  }
+
+  .connections-modal {
+    // Anula o posicionamento padrão do <dialog> do navegador
+    // (position: absolute + margens automáticas), que o deixava
+    // fora do centro da tela.
+    position: static;
+    inset: auto;
+    margin: 0;
+
+    display: flex;
+    flex-direction: column;
+    width: 420px;
+    max-width: 100%;
+    max-height: min(70dvh, 640px);
+    background-color: $offWhite;
+    border: none;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .connections-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px 14px;
+    border-bottom: 1px solid $frenchGray;
+
+    h2 {
+      font-family: $montserratFont;
+      font-size: 20px;
+      font-weight: 600;
+      color: $eerieBlack;
+    }
+
+    .close-button {
+      background: transparent;
+      border: none;
+      font-size: 16px;
+      color: $dimGray;
+      cursor: pointer;
+      padding: 4px 8px;
+
+      &:hover {
+        color: $eerieBlack;
+      }
+    }
+  }
+
+  .connections-list {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    padding: 18px 24px;
+    overflow-y: auto;
+    flex: 1;
+    min-height: 120px;
+
+    .connection-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+
+      .avatar-container {
+        cursor: pointer;
+        min-width: 0;
+
+        .avatar-img-medium {
+          width: 42px;
+          height: 42px;
+          object-fit: cover;
+        }
+      }
+
+      .custom-button {
+        flex-shrink: 0;
+        font-size: 14px;
+        font-weight: 600;
+      }
+    }
+
+    .connections-feedback {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex: 1;
+      text-align: center;
+      font-family: $hindFont;
+      font-size: 15px;
+      color: $dimGray;
+      padding: 20px 0;
+    }
+
+    .load-more-button {
+      align-self: center;
+      background: transparent;
+      border: none;
+      font-family: $hindFont;
+      font-size: 14px;
+      font-weight: 600;
+      color: $tertiaryColor;
+      cursor: pointer;
+      padding: 6px 12px;
+
+      &:disabled {
+        color: $dimGray;
+        cursor: wait;
+      }
+    }
+  }
+
+  .connections-footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 14px 24px 18px;
+    border-top: 1px solid $frenchGray;
+    font-family: $hindFont;
+
+    p {
+      font-size: 14px;
+      color: $dimGray;
+    }
+
+    .explore-link {
+      background: transparent;
+      border: none;
+      font-family: $hindFont;
+      font-size: 16px;
+      font-weight: 700;
+      color: $tertiaryColor;
+      cursor: pointer;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .connections-overlay {
+    padding: 12px;
+
+    .connections-modal {
+      width: 100%;
+      max-height: 85dvh;
+    }
+
+    .connections-header {
+      padding: 16px 18px 12px;
+
+      h2 {
+        font-size: 18px;
+      }
+    }
+
+    .connections-list {
+      padding: 14px 18px;
+      gap: 16px;
+    }
+
+    .connections-footer {
+      padding: 12px 18px 16px;
+    }
+  }
+}

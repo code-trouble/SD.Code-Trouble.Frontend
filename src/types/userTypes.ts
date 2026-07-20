@@ -9,11 +9,14 @@ interface UserInterest {
   tag: InterestTag;
 }
 
+export type UserRole = "member" | "moderator" | "admin";
+
 export interface User {
   id: number;
   username: string;
   email: string;
   created_at: string;
+  role?: UserRole | null;
   display_name: string | null;
   pronouns: string | null;
   bio: string | null;
@@ -35,6 +38,16 @@ export interface User {
     followers: number;
     following: number;
   };
+}
+
+/** Compact user shape returned by connections/suggestions endpoints. */
+export interface UserSummary {
+  id: number;
+  username: string;
+  display_name: string | null;
+  avatar_url: string | null;
+  bio: string | null;
+  pronouns: string | null;
 }
 
 export type UpdateProfileData = Partial<{
