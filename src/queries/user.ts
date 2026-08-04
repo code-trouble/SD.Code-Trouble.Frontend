@@ -1,19 +1,18 @@
-import {
-  useInfiniteQuery,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { toast } from "sonner";
 import { api } from "../services/api";
-import { communityKeys, userKeys } from "./keys";
-import { UpdateProfileData, User, UserSummary } from "../types/userTypes";
+import { markSessionStarted } from "../services/session";
 import { useAuthModalStore } from "../stores/authModalStore";
+import type { UpdateProfileData, User, UserSummary } from "../types/userTypes";
+import { communityKeys, userKeys } from "./keys";
 
 const fetchMe = async (): Promise<User | null> => {
   try {
     const { data } = await api.get<User>("/users/me");
+    // Covers browsers that logged in before the session hint existed: a
+    // working session proves a refresh cookie is there.
+    markSessionStarted();
     return data;
   } catch (error) {
     // Not logged in is a valid state, not an error to retry.
@@ -56,15 +55,14 @@ export const CONNECTIONS_PAGE_SIZE = 10;
 export const useConnections = (
   username: string | undefined,
   type: "followers" | "following",
-  enabled: boolean = true,
+  enabled = true,
 ) =>
   useInfiniteQuery({
     queryKey: userKeys.connections(username ?? "", type),
     queryFn: async ({ pageParam }) => {
-      const { data } = await api.get<UserSummary[]>(
-        `/users/${username}/connections`,
-        { params: { type, page: pageParam, limit: CONNECTIONS_PAGE_SIZE } },
-      );
+      const { data } = await api.get<UserSummary[]>(`/users/${username}/connections`, {
+        params: { type, page: pageParam, limit: CONNECTIONS_PAGE_SIZE },
+      });
       return data;
     },
     initialPageParam: 1,
@@ -78,10 +76,9 @@ export const useSuggestions = (limit: number) =>
   useQuery({
     queryKey: communityKeys.suggestions(limit),
     queryFn: async () => {
-      const { data } = await api.get<UserSummary[]>(
-        "/users/explore/suggestions",
-        { params: { limit } },
-      );
+      const { data } = await api.get<UserSummary[]>("/users/explore/suggestions", {
+        params: { limit },
+      });
       return data;
     },
     staleTime: 5 * 60_000, // random anyway; no point re-shuffling on remount
@@ -98,22 +95,17 @@ export const useExploreUsers = (batchSize: number) =>
   useInfiniteQuery({
     queryKey: communityKeys.explore(batchSize),
     queryFn: async ({ pageParam }) => {
-      const { data } = await api.get<UserSummary[]>(
-        "/users/explore/suggestions",
-        {
-          params: {
-            limit: batchSize,
-            exclude: pageParam.length ? pageParam.join(",") : undefined,
-          },
+      const { data } = await api.get<UserSummary[]>("/users/explore/suggestions", {
+        params: {
+          limit: batchSize,
+          exclude: pageParam.length ? pageParam.join(",") : undefined,
         },
-      );
+      });
       return data;
     },
     initialPageParam: [] as number[],
     getNextPageParam: (lastPage, allPages) =>
-      lastPage.length < batchSize
-        ? undefined
-        : allPages.flat().map((user) => user.id),
+      lastPage.length < batchSize ? undefined : allPages.flat().map((user) => user.id),
     staleTime: 5 * 60_000,
   });
 

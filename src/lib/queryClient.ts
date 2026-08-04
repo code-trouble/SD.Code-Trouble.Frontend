@@ -1,4 +1,5 @@
 import { QueryClient } from "@tanstack/react-query";
+import { userKeys } from "../queries/keys";
 
 /**
  * Defaults tuned for a slow API (~1.2-2s per request):
@@ -18,3 +19,22 @@ export const queryClient = new QueryClient({
     },
   },
 });
+
+/**
+ * Drop everything user-specific after a logout / expired session.
+ *
+ * NEVER `queryClient.clear()` here: clear() evicts the `/me` query while its
+ * observer (mounted in App.tsx) is still subscribed. The observer then rebuilds
+ * the query with `data === undefined`, which makes it refetch immediately ->
+ * 401 -> interceptor -> clear() -> ... an unthrottled request loop (this was
+ * the landing-page "1k+ requests" bug).
+ *
+ * Instead, seed `/me` with `null` FIRST — a fresh, valid "logged out" answer
+ * the observer can hold on to — and only then remove the other queries.
+ */
+export function resetToSignedOut() {
+  queryClient.setQueryData(userKeys.me(), null);
+  queryClient.removeQueries({
+    predicate: (query) => !(query.queryKey[0] === "users" && query.queryKey[1] === "me"),
+  });
+}
